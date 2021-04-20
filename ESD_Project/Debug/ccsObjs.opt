@@ -1,0 +1,1 @@
+"./i2c.obj" "./main.obj" "./startup_msp432p401r_ccs.obj" "./switch.obj" "./system_msp432p401r.obj" "./systimer.obj" "../msp432p401r.cmd" -llibc.a 
