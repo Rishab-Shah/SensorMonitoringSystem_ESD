@@ -7,8 +7,9 @@
 #include "main.h"
 
 #define POLL_FREQ_AM2320                3000
+#define TEMPERATURE                     1
 
-int32_t pwm_num_value;
+
 int32_t am2320_poll_frequency;
 extern uint8_t data_buffer[8];
 void temparutremeasureent();
@@ -30,7 +31,7 @@ void main(void)
     {
         if(delay_msec() > am2320_poll_frequency)
         {
-#if 0
+#if TEMPERATURE
             temparutremeasureent();
             printf("am2320_poll_frequency::%d\r\n",am2320_poll_frequency);
 #endif
@@ -48,11 +49,12 @@ void main(void)
 void init_routine()
 {
     init_timer();
-
-   /* i2c_init();
+#if TEMPERATURE
+    i2c_init();
 
     switch_init();
-    switch_interrupt_init(); */
+    switch_interrupt_init();
+#endif
 }
 
 void temparutremeasureent()
@@ -67,12 +69,13 @@ void temparutremeasureent()
     reset_timer();
     while(delay_msec() < 10);
 
-    i2c_write_data();
+
+    i2c_write_data(FUNCTION_CODE,START_ADDRESS,REGISTER_LENGTH,3);
 
     reset_timer();
     while(delay_msec() < 2);
 
-    i2c_read_data();
+    i2c_read_data(7);
 
     get_RH_and_temperature(&RH, &T);
     get_CRC(&CRC_temp);

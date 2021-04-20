@@ -6,10 +6,31 @@
  */
 #include "i2c.h"
 
-#define FUNCTION_CODE       0x03
-#define START_ADDRESS       0x00
-#define REGISTER_LENGTH     0x04
-#define I2C_AM2320_ADDRESS  0x5C
+
+#define I2C_AM2320_ADDRESS          0x5C
+
+
+
+#define SDA                         BIT6
+#define SCL                         BIT7
+#define SEL_0                       P1->SEL0
+#define SEL_1                       P1->SEL1
+
+#define EUSCI_I2C_I2CSA             EUSCI_B0->I2CSA
+#define EUSCI_I2C_BRW               EUSCI_B0->BRW
+
+#define EUSCI_I2C_CTLW0             EUSCI_B0->CTLW0
+#define EUSCI_I2C_CTLW0_TR          EUSCI_B_CTLW0_TR
+#define EUSCI_I2C_CTLW0_TXSTT       EUSCI_B_CTLW0_TXSTT
+#define EUSCI_I2C_CTLW0_TXSTP       EUSCI_B_CTLW0_TXSTP
+
+#define I2C_TXBUF                   EUSCI_B0->TXBUF
+#define I2C_RXBUF                   EUSCI_B0->RXBUF
+
+#define EUSCI_I2C_IFG               EUSCI_B0->IFG
+#define EUSCI_I2C_IFG_TXIFG0        EUSCI_B_IFG_TXIFG0
+#define EUSCI_I2C_IFG_RXIFG0        EUSCI_B_IFG_RXIFG0
+
 
 uint8_t data_buffer[8];
 
@@ -30,23 +51,23 @@ void i2c_init()
 {
     clear_i2c_buffer();
 
-    P1->SEL0 |= BIT6 | BIT7;                // I2C pins
+    SEL_0 |= SDA | SCL;                // I2C pins
 
-    P1->SEL1 &= ~BIT6;
-    P1->SEL1 &= ~BIT7;
+    SEL_1 &= ~SDA;
+    SEL_1 &= ~SCL;
 
     // Configure USCI_B0 for I2C mode
-    EUSCI_B0->CTLW0 |= EUSCI_A_CTLW0_SWRST; // Software reset enabled
+    EUSCI_I2C_CTLW0 |= EUSCI_B_CTLW0_SWRST; // Software reset enabled //EUSCI_B_CTLW0_SWRST
 
-    EUSCI_B0->CTLW0 = EUSCI_A_CTLW0_SWRST | // Remain eUSCI in reset mode
+    EUSCI_I2C_CTLW0 = EUSCI_B_CTLW0_SWRST | // Remain eUSCI in reset mode
             EUSCI_B_CTLW0_MODE_3 |          // I2C mode
             EUSCI_B_CTLW0_MST |             // Master mode
             EUSCI_B_CTLW0_SYNC |            // Sync mode
             EUSCI_B_CTLW0_SSEL__SMCLK;      // SMCLK
 
-    EUSCI_B0->BRW = 30;                     // baudrate = SMCLK / 30 = 100kHz
-    EUSCI_B0->I2CSA = I2C_AM2320_ADDRESS;               // Slave address
-    EUSCI_B0->CTLW0 &= ~EUSCI_A_CTLW0_SWRST;// Release eUSCI from reset
+    EUSCI_I2C_BRW = 30;                     // baudrate = SMCLK / 30 = 100kHz
+    EUSCI_I2C_I2CSA = I2C_AM2320_ADDRESS;               // Slave address
+    EUSCI_I2C_CTLW0 &= ~EUSCI_B_CTLW0_SWRST;// Release eUSCI from reset
 
 }
 
@@ -54,18 +75,18 @@ void i2c_init()
 void i2c_write_wakeup()
 {
     /* Write slave address */
-    EUSCI_B0->I2CSA = I2C_AM2320_ADDRESS;                  // Slave address
+    EUSCI_I2C_I2CSA = I2C_AM2320_ADDRESS;                  // Slave address
 
     /* Transmit mode */
-    EUSCI_B0->CTLW0 |= EUSCI_B_CTLW0_TR;
+    EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TR;
 
     /* I2C start condition */
-    EUSCI_B0->CTLW0 |= EUSCI_B_CTLW0_TXSTT;
+    EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TXSTT;
 
     /* Wait until slave address is sent */
-    while(EUSCI_B0->CTLW0 & EUSCI_B_CTLW0_TXSTT);
+    while(EUSCI_I2C_CTLW0 & EUSCI_I2C_CTLW0_TXSTT);
 
-    while(!(EUSCI_B0->IFG & EUSCI_B_IFG_TXIFG0));
+    while(!(EUSCI_I2C_IFG & EUSCI_I2C_IFG_TXIFG0));
 
     //for(i = 300; i>0 ; i--);
     reset_timer();
@@ -73,101 +94,101 @@ void i2c_write_wakeup()
 
 
     /* Transmit stop condition */
-    EUSCI_B0->CTLW0 |= EUSCI_B_CTLW0_TXSTP;
-    while(EUSCI_B0->CTLW0 & EUSCI_B_CTLW0_TXSTP);
+    EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TXSTP;
+    while(EUSCI_I2C_CTLW0 & EUSCI_I2C_CTLW0_TXSTP);
 }
 
 
-void i2c_write_data()
+void i2c_write_data(uint8_t function_code ,uint8_t start_address ,uint8_t registerlength,uint8_t length_data)
 {
     // Initialize data variable
     clear_i2c_buffer();
 
-    data_buffer[0] = FUNCTION_CODE;
-    data_buffer[1] = START_ADDRESS;
-    data_buffer[2] = REGISTER_LENGTH;
+    data_buffer[0] = function_code;
+    data_buffer[1] = start_address;
+    data_buffer[2] = registerlength;
 
     /* Write slave address */
-    EUSCI_B0->I2CSA = I2C_AM2320_ADDRESS;                  // Slave address
+    EUSCI_I2C_I2CSA = I2C_AM2320_ADDRESS;                  // Slave address
 
     /* Transmit mode */
-    EUSCI_B0->CTLW0 |= EUSCI_B_CTLW0_TR;
+    EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TR;
 
     /* I2C start condition */
-    EUSCI_B0->CTLW0 |= EUSCI_B_CTLW0_TXSTT;
+    EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TXSTT;
 
     /* Wait until slave address is sent */
-    while(EUSCI_B0->CTLW0 & EUSCI_B_CTLW0_TXSTT);
+    while(EUSCI_I2C_CTLW0 & EUSCI_B_CTLW0_TXSTT);
 
     reset_timer();
     while(delay_msec() < 1);
 
-    while(!(EUSCI_B0->IFG & EUSCI_B_IFG_TXIFG0));
+    while(!(EUSCI_I2C_IFG & EUSCI_I2C_IFG_TXIFG0));
 
     /* write logic for multiple bytes */
     uint8_t i = 0;
 
-    for(i = 0; i<3; i++)
+    for(i = 0; i<length_data; i++)
     {
         delay_usec(2);
-        EUSCI_B0->TXBUF = data_buffer[i];
-        while(!(EUSCI_B0->IFG & EUSCI_B_IFG_TXIFG0));
+        I2C_TXBUF = data_buffer[i];
+        while(!(EUSCI_I2C_IFG & EUSCI_I2C_IFG_TXIFG0));
     }
 
     /* wait till all the data is transmitted */
-    while(!(EUSCI_B0->IFG & EUSCI_B_IFG_TXIFG0));
+    while(!(EUSCI_I2C_IFG & EUSCI_I2C_IFG_TXIFG0));
 
     /* Transmit stop condition */
-    EUSCI_B0->CTLW0 |= EUSCI_B_CTLW0_TXSTP;
-    while(EUSCI_B0->CTLW0 & EUSCI_B_CTLW0_TXSTP);
+    EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TXSTP;
+    while(EUSCI_I2C_CTLW0 & EUSCI_I2C_CTLW0_TXSTP);
 }
 
 
-void i2c_read_data()
+void i2c_read_data(uint8_t bytes_read)
 {
     // Initialize data variable
     clear_i2c_buffer();
 
     /* Write slave address */
-    EUSCI_B0->I2CSA = I2C_AM2320_ADDRESS;                  // Slave address
+    EUSCI_I2C_I2CSA = I2C_AM2320_ADDRESS;                  // Slave address
 
     /* Receiver mode */
-    EUSCI_B0->CTLW0 &= ~EUSCI_B_CTLW0_TR;
+    EUSCI_I2C_CTLW0 &= ~EUSCI_I2C_CTLW0_TR;
 
     /* I2C start condition */
-    EUSCI_B0->CTLW0 |= EUSCI_B_CTLW0_TXSTT;
+    EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TXSTT;
 
     /* Wait until slave address is sent */
-    while(EUSCI_B0->CTLW0 & EUSCI_B_CTLW0_TXSTT);
+    while(EUSCI_I2C_CTLW0 & EUSCI_I2C_CTLW0_TXSTT);
 
     /* trying to create a delay of 30usec */
-    P1->OUT |= BIT0;
+   // P1->OUT |= BIT0;
 
     uint8_t i = 0;
-    for(i = 100; i>0;i--);
+    delay_usec(3);
 
-    P1->OUT &= ~BIT0;
+   // P1->OUT &= ~BIT0;
 
     /* read data 8 bytes */
-    for(i = 0; i<7;i++)
+    for(i = 0; i<bytes_read;i++)
     {
        delay_usec(2);
-       while(!(EUSCI_B0->IFG & EUSCI_B_IFG_RXIFG0));  /* wait till data is received */
-       data_buffer[i] = EUSCI_B0->RXBUF;
+       while(!(EUSCI_I2C_IFG & EUSCI_I2C_IFG_RXIFG0));  /* wait till data is received */
+       data_buffer[i] = I2C_RXBUF;
     }
 
     /*Stop part */
     //while(!(EUSCI_B0->IFG & EUSCI_B_IFG_RXIFG0));
     /* Transmit stop condition */
-    EUSCI_B0->CTLW0 |= EUSCI_B_CTLW0_TXSTP;
+    EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TXSTP;
 
-    while(!(EUSCI_B0->IFG & EUSCI_B_IFG_RXIFG0));  /* wait till data is received */
-    data_buffer[i] = EUSCI_B0->RXBUF;
+    while(!(EUSCI_I2C_IFG & EUSCI_I2C_IFG_RXIFG0));  /* wait till data is received */
+    data_buffer[i] = I2C_RXBUF;
 
     /* Transmit mode */
     // EUSCI_B0->CTLW0 |= EUSCI_B_CTLW0_TR;
 
-    while(EUSCI_B0->CTLW0 & EUSCI_B_CTLW0_TXSTP);
+    while(EUSCI_I2C_CTLW0 & EUSCI_I2C_CTLW0_TXSTP);
 }
 
 
