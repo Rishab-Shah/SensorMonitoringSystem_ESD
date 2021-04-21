@@ -13,8 +13,7 @@
 
 #define BASE_PWM_VALUE                  100
 #define PWM_DUTY_CYCLE_VALUE            55
-#define INC_PERCENT                     1000
-#define DEC_PERCENT                     1000
+
 
 #define ERROR                           (-1)
 #define SUCCESS                         (0)

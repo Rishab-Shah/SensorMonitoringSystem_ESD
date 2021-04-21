@@ -12,6 +12,11 @@
 #include <stdint.h>
 #include "systimer.h"
 
+#define SDA                         BIT6
+#define SCL                         BIT7
+#define SEL_0                       P1->SEL0
+#define SEL_1                       P1->SEL1
+
 void i2c_init();
 void i2c_write_wakeup();
 void i2c_write_data(uint8_t function_code ,uint8_t start_address ,uint8_t registerlength,uint8_t length_data);

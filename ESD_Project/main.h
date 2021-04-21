@@ -13,5 +13,8 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "switch.h"
+#include "gpio.h"
+#include "i2c_bitbang.h"
+#include "rtc.h"
 
 #endif /* MAIN_H_ */

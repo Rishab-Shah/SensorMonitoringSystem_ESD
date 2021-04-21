@@ -26,6 +26,9 @@ main.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdio.h
 main.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdarg.h
 main.obj: ../switch.h
 main.obj: ../macros.h
+main.obj: ../gpio.h
+main.obj: ../i2c_bitbang.h
+main.obj: ../rtc.h
 
 ../main.c: 
 C:/ti/ccs1020/ccs/ccs_base/arm/include/msp.h: 
@@ -53,3 +56,6 @@ C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdio.h:
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdarg.h: 
 ../switch.h: 
 ../macros.h: 
+../gpio.h: 
+../i2c_bitbang.h: 
+../rtc.h: 

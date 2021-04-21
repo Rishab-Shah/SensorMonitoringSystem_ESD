@@ -9,13 +9,6 @@
 
 #define I2C_AM2320_ADDRESS          0x5C
 
-
-
-#define SDA                         BIT6
-#define SCL                         BIT7
-#define SEL_0                       P1->SEL0
-#define SEL_1                       P1->SEL1
-
 #define EUSCI_I2C_I2CSA             EUSCI_B0->I2CSA
 #define EUSCI_I2C_BRW               EUSCI_B0->BRW
 
@@ -39,7 +32,7 @@ void delay_usec(int n);
 void clear_i2c_buffer()
 {
     // Initialize data variable
-    unsigned char s = 0;
+    uint8_t s = 0;
 
     for(s = 0; s< 8; s++)
     {
@@ -65,7 +58,7 @@ void i2c_init()
             EUSCI_B_CTLW0_SYNC |            // Sync mode
             EUSCI_B_CTLW0_SSEL__SMCLK;      // SMCLK
 
-    EUSCI_I2C_BRW = 30;                     // baudrate = SMCLK / 30 = 100kHz
+    EUSCI_I2C_BRW = 70;                     // baudrate = SMCLK / 30 = 100kHz
     EUSCI_I2C_I2CSA = I2C_AM2320_ADDRESS;               // Slave address
     EUSCI_I2C_CTLW0 &= ~EUSCI_B_CTLW0_SWRST;// Release eUSCI from reset
 
@@ -88,10 +81,8 @@ void i2c_write_wakeup()
 
     while(!(EUSCI_I2C_IFG & EUSCI_I2C_IFG_TXIFG0));
 
-    //for(i = 300; i>0 ; i--);
     reset_timer();
     while(delay_msec() < 1);
-
 
     /* Transmit stop condition */
     EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TXSTP;
@@ -146,6 +137,9 @@ void i2c_write_data(uint8_t function_code ,uint8_t start_address ,uint8_t regist
 
 void i2c_read_data(uint8_t bytes_read)
 {
+
+    uint8_t i = 0;
+
     // Initialize data variable
     clear_i2c_buffer();
 
@@ -161,13 +155,9 @@ void i2c_read_data(uint8_t bytes_read)
     /* Wait until slave address is sent */
     while(EUSCI_I2C_CTLW0 & EUSCI_I2C_CTLW0_TXSTT);
 
-    /* trying to create a delay of 30usec */
-   // P1->OUT |= BIT0;
 
-    uint8_t i = 0;
     delay_usec(3);
 
-   // P1->OUT &= ~BIT0;
 
     /* read data 8 bytes */
     for(i = 0; i<bytes_read;i++)

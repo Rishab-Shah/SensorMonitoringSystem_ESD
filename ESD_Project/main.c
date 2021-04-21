@@ -6,8 +6,8 @@
  */
 #include "main.h"
 
-#define POLL_FREQ_AM2320                3000
-#define TEMPERATURE                     1
+#define POLL_FREQ_AM2320                        2000
+#define TEMPERATURE_SWITCH                      1
 
 
 int32_t am2320_poll_frequency;
@@ -23,15 +23,15 @@ void main(void)
 
 	am2320_poll_frequency = POLL_FREQ_AM2320;
 
-	//Configure GPIO
-    P1->DIR |= BIT0;
-    P1->OUT &= ~BIT0;
-
     while(1)
     {
+
+#if 1
         if(delay_msec() > am2320_poll_frequency)
         {
-#if TEMPERATURE
+
+#if TEMPERATURE_SWITCH
+
             temparutremeasureent();
             printf("am2320_poll_frequency::%d\r\n",am2320_poll_frequency);
 #endif
@@ -42,19 +42,27 @@ void main(void)
 
         __sleep();
         __no_operation();
+#endif
     }
+
 }
 
 
 void init_routine()
 {
     init_timer();
-#if TEMPERATURE
-    i2c_init();
+
+#if TEMPERATURE_SWITCH
+    //i2c_init();
 
     switch_init();
     switch_interrupt_init();
+
 #endif
+
+    gpio_init();
+    rtc_init();
+    //spi_init();
 }
 
 void temparutremeasureent()
@@ -64,17 +72,22 @@ void temparutremeasureent()
     unsigned int CRC_data = 0x0000;
     unsigned int CRC_temp = 0x0000;
 
-    i2c_write_wakeup();
+    i2c_write_operation_wakeup(0xB8);
 
     reset_timer();
-    while(delay_msec() < 10);
+    while(delay_msec() < 5);
 
+    i2c_init();
+
+    reset_timer();
+    while(delay_msec() < 5);
 
     i2c_write_data(FUNCTION_CODE,START_ADDRESS,REGISTER_LENGTH,3);
 
     reset_timer();
     while(delay_msec() < 2);
 
+    i2c_init();
     i2c_read_data(7);
 
     get_RH_and_temperature(&RH, &T);
@@ -83,6 +96,7 @@ void temparutremeasureent()
 
     if(CRC_temp == CRC_data)
     {
+      calculate_rtc_time();
       printf("RH::%x\n",RH/10);
       printf("T::%x\n",T/10);
       //lcd_print(8, 2, RH);
