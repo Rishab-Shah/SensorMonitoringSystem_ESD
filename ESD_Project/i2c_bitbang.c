@@ -20,36 +20,17 @@ void set_scl(uint8_t value);
 void init_i2c_bitbang();
 void start_bit()
 {
-   //putstr("START BIT\r\n");
+    set_sda(HIGH);
+    mydelay(I2C_DELAY);
 
-   //SDA = HIGH;
+    set_scl(HIGH);
+    mydelay(I2C_DELAY);
 
-   //P1->OUT |= SDA;
-   //for(int i=0;i<2;i++);
-   set_sda(HIGH);
-  // mydelay(I2C_DELAY);
+    set_sda(LOW);
+    mydelay(I2C_DELAY);
 
-   //SCL = HIGH;
-
-   //P1->OUT |= SCL;
-   //for(int i=0;i<2;i++);
-   set_scl(HIGH);
-  // mydelay(I2C_DELAY);
-
-   /* Transition from high to low detected when SCL is high */
-   //SDA = LOW;
-
-   //P1->OUT &= ~SDA;
-   //for(int i=0;i<2;i++);
-   set_sda(LOW);
-  // mydelay(I2C_DELAY);
-
-   //SCL = LOW;
-
-   //P1->OUT &= ~SCL;
-   //for(int i=0;i<2;i++);
-   set_scl(LOW);
-  // mydelay(I2C_DELAY);
+    set_scl(LOW);
+    mydelay(I2C_DELAY);
 
 }
 
@@ -101,22 +82,9 @@ void mydelay(uint8_t data)
 /* This performs a write operation on the bus for the 8 bits passed */
 uint8_t i2c_write_operation_wakeup(uint8_t Txdata)
 {
-
     init_i2c_bitbang();
 
-    set_sda(HIGH);
-    mydelay(I2C_DELAY);
-
-    set_scl(HIGH);
-    mydelay(I2C_DELAY);
-
-    set_sda(LOW);
-    mydelay(I2C_DELAY);
-
-    set_scl(LOW);
-    mydelay(I2C_DELAY);
-
-//------------------------------------------------------------------//
+    start_bit();
 
     /* Ensure SCL is low before SDA sends data to make a proper read */
     set_scl(LOW);
@@ -152,7 +120,6 @@ uint8_t i2c_write_operation_wakeup(uint8_t Txdata)
     mydelay(I2C_DELAY);
 
 //-----------------------------------------------------------
-
     reset_timer();
     while(delay_msec() < 2);
 
@@ -196,18 +163,14 @@ unsigned char i2c_read_operation()
 /* This is used to send an ack during sequential read */
 void SendACK()
 {
-
     set_sda(LOW);
     mydelay(I2C_DELAY);
-
 
     set_scl(HIGH);
     mydelay(I2C_DELAY);
 
-
     set_scl(LOW);
     mydelay(I2C_DELAY);
-
 
     set_sda(HIGH);
     mydelay(I2C_DELAY);
@@ -216,16 +179,17 @@ void SendACK()
 /* This is used to prepare a restart sequence */
 void restart_bit()
 {
-
     set_sda(HIGH);
-
+    mydelay(I2C_DELAY);
 
     set_scl(HIGH);
-
+    mydelay(I2C_DELAY);
 
     set_sda(LOW);
+    mydelay(I2C_DELAY);
 
     set_scl(LOW);
+    mydelay(I2C_DELAY);
 }
 
 /* This is used to send a NACK during the end of read sequence*/
@@ -242,6 +206,7 @@ void SendNACK(void)
 void PollAck()
 {
     set_scl(HIGH);
+    mydelay(I2C_DELAY);
 
     while(SDA == HIGH)
     {
@@ -249,6 +214,7 @@ void PollAck()
     }
 
     set_scl(LOW);
+    mydelay(I2C_DELAY);
 }
 
 void set_sda(uint8_t value)

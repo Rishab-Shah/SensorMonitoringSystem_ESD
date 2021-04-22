@@ -155,9 +155,7 @@ void i2c_read_data(uint8_t bytes_read)
     /* Wait until slave address is sent */
     while(EUSCI_I2C_CTLW0 & EUSCI_I2C_CTLW0_TXSTT);
 
-
     delay_usec(3);
-
 
     /* read data 8 bytes */
     for(i = 0; i<bytes_read;i++)
@@ -167,16 +165,11 @@ void i2c_read_data(uint8_t bytes_read)
        data_buffer[i] = I2C_RXBUF;
     }
 
-    /*Stop part */
-    //while(!(EUSCI_B0->IFG & EUSCI_B_IFG_RXIFG0));
     /* Transmit stop condition */
     EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TXSTP;
 
     while(!(EUSCI_I2C_IFG & EUSCI_I2C_IFG_RXIFG0));  /* wait till data is received */
     data_buffer[i] = I2C_RXBUF;
-
-    /* Transmit mode */
-    // EUSCI_B0->CTLW0 |= EUSCI_B_CTLW0_TR;
 
     while(EUSCI_I2C_CTLW0 & EUSCI_I2C_CTLW0_TXSTP);
 }

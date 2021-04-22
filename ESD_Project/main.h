@@ -16,5 +16,7 @@
 #include "gpio.h"
 #include "i2c_bitbang.h"
 #include "rtc.h"
-
+#include "uart.h"
+#include "string.h"
+#include "cbfifo.h"
 #endif /* MAIN_H_ */

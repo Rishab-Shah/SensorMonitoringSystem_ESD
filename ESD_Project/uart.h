@@ -1,23 +1,29 @@
 /******************************************************************************
-* @file:switch.h
+* @file:uart.h
 *
-* @brief: This files consists of the function headers used in the switch.c file
+* @brief: This files consists of the function headers used in the uart.c file
 *
 * @author: Rishab Shah
 * @date:  12-Mar-2021
 *******************************************************************************/
-#ifndef RTC_H_
-#define RTC_H_
+#ifndef UART_H_
+#define UART_H_
 /*******************************************************************************
 Header files
 *******************************************************************************/
 #include "stdio.h"
 #include "msp.h"
 #include "macros.h"
+#include "cbfifo.h"
 /*******************************************************************************
-Function declarations
+Function prototype
 *******************************************************************************/
-void rtc_init();
-void calculate_rtc_time(char* timestamp);
+extern CB_t cbfifo_tx;
+extern CB_t cbfifo_rx;
 
-#endif /* RTC_H_ */
+void EUSCIA0_IRQHandler(void);
+void clock_init();
+void config_uart();
+
+
+#endif /* UART_H_ */

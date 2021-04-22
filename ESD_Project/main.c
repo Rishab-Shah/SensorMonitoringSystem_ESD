@@ -7,7 +7,7 @@
 #include "main.h"
 
 #define POLL_FREQ_AM2320                        2000
-#define TEMPERATURE_SWITCH                      1
+#define TEMPERATURE_SWITCH                      0
 
 
 int32_t am2320_poll_frequency;
@@ -20,6 +20,9 @@ void main(void)
 	WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;		// stop watchdog timer
 
 	init_routine();
+
+	char displaystring[200];
+	char rtc_buffer[25];
 
 	am2320_poll_frequency = POLL_FREQ_AM2320;
 
@@ -36,6 +39,27 @@ void main(void)
             printf("am2320_poll_frequency::%d\r\n",am2320_poll_frequency);
 #endif
 
+            //"DD:MM:YY:HH:MM:SS::%2.2f,%2.2f\r\n"
+            //strcpy(rtc_buffer,"");
+            calculate_rtc_time(rtc_buffer);
+            //printf("%s\r\n",rtc_buffer);
+            //printf("am2320_poll_frequency::%d\r\n",am2320_poll_frequency);
+
+           // strcpy(displaystring,"");
+            strcpy(displaystring,rtc_buffer);
+
+            strncat(displaystring,"26.20",5);
+
+            strncat(displaystring,",",1);
+
+            strncat(displaystring,"84.20",5);
+
+            strncat(displaystring,"\r\n",2);
+            printf("%s",displaystring);
+
+            //printf("%d",strlen(displaystring));
+            cbfifo_enqueue(&cbfifo_tx,displaystring,strlen(displaystring));
+
             P1->OUT ^= BIT0;
             reset_timer();
         }
@@ -50,18 +74,20 @@ void main(void)
 
 void init_routine()
 {
+    clock_init();
+
     init_timer();
 
-#if TEMPERATURE_SWITCH
-    //i2c_init();
+    rtc_init();
+
+   /* config uart */
+    config_uart();
 
     switch_init();
     switch_interrupt_init();
 
-#endif
-
     gpio_init();
-    rtc_init();
+
     //spi_init();
 }
 
@@ -96,7 +122,7 @@ void temparutremeasureent()
 
     if(CRC_temp == CRC_data)
     {
-      calculate_rtc_time();
+      //calculate_rtc_time();
       printf("RH::%x\n",RH/10);
       printf("T::%x\n",T/10);
       //lcd_print(8, 2, RH);

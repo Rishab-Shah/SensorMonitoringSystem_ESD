@@ -1,1 +1,1 @@
-"./gpio.obj" "./i2c.obj" "./i2c_bitbang.obj" "./main.obj" "./rtc.obj" "./spi.obj" "./startup_msp432p401r_ccs.obj" "./switch.obj" "./system_msp432p401r.obj" "./systimer.obj" "../msp432p401r.cmd" -llibc.a 
+"./cbfifo.obj" "./gpio.obj" "./i2c.obj" "./i2c_bitbang.obj" "./main.obj" "./rtc.obj" "./spi.obj" "./startup_msp432p401r_ccs.obj" "./switch.obj" "./system_msp432p401r.obj" "./systimer.obj" "./uart.obj" "../msp432p401r.cmd" -llibc.a 

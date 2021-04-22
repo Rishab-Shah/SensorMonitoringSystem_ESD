@@ -9,6 +9,7 @@ CMD_SRCS += \
 ../msp432p401r.cmd 
 
 C_SRCS += \
+../cbfifo.c \
 ../gpio.c \
 ../i2c.c \
 ../i2c_bitbang.c \
@@ -18,9 +19,11 @@ C_SRCS += \
 ../startup_msp432p401r_ccs.c \
 ../switch.c \
 ../system_msp432p401r.c \
-../systimer.c 
+../systimer.c \
+../uart.c 
 
 C_DEPS += \
+./cbfifo.d \
 ./gpio.d \
 ./i2c.d \
 ./i2c_bitbang.d \
@@ -30,9 +33,11 @@ C_DEPS += \
 ./startup_msp432p401r_ccs.d \
 ./switch.d \
 ./system_msp432p401r.d \
-./systimer.d 
+./systimer.d \
+./uart.d 
 
 OBJS += \
+./cbfifo.obj \
 ./gpio.obj \
 ./i2c.obj \
 ./i2c_bitbang.obj \
@@ -42,9 +47,11 @@ OBJS += \
 ./startup_msp432p401r_ccs.obj \
 ./switch.obj \
 ./system_msp432p401r.obj \
-./systimer.obj 
+./systimer.obj \
+./uart.obj 
 
 OBJS__QUOTED += \
+"cbfifo.obj" \
 "gpio.obj" \
 "i2c.obj" \
 "i2c_bitbang.obj" \
@@ -54,9 +61,11 @@ OBJS__QUOTED += \
 "startup_msp432p401r_ccs.obj" \
 "switch.obj" \
 "system_msp432p401r.obj" \
-"systimer.obj" 
+"systimer.obj" \
+"uart.obj" 
 
 C_DEPS__QUOTED += \
+"cbfifo.d" \
 "gpio.d" \
 "i2c.d" \
 "i2c_bitbang.d" \
@@ -66,9 +75,11 @@ C_DEPS__QUOTED += \
 "startup_msp432p401r_ccs.d" \
 "switch.d" \
 "system_msp432p401r.d" \
-"systimer.d" 
+"systimer.d" \
+"uart.d" 
 
 C_SRCS__QUOTED += \
+"../cbfifo.c" \
 "../gpio.c" \
 "../i2c.c" \
 "../i2c_bitbang.c" \
@@ -78,6 +89,7 @@ C_SRCS__QUOTED += \
 "../startup_msp432p401r_ccs.c" \
 "../switch.c" \
 "../system_msp432p401r.c" \
-"../systimer.c" 
+"../systimer.c" \
+"../uart.c" 
 
 
