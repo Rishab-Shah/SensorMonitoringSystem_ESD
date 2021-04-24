@@ -28,5 +28,8 @@ void gpio_init()
     //Configure GPIO
     P1->DIR |= BIT0;
     P1->OUT &= ~BIT0;
+
+    P4->DIR |= BIT0;
+    P4->OUT &= ~BIT0;
 }
 /* EOF */

@@ -55,11 +55,6 @@ void TA0_0_IRQHandler(void)
     TIMER_A0->CCTL[0] &= ~TIMER_A_CCTLN_CCIFG;
 }
 
-void get_timer()
-{
-
-}
-
 void reset_timer()
 {
     g_counter2 = 0;
@@ -69,7 +64,6 @@ int delay_msec()
 {
     return g_counter2;
 }
-
 
 /* 1 count = 10usec approx */
 void delay_usec(int n)

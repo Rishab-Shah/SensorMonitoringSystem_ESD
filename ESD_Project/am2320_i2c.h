@@ -30,8 +30,8 @@ void am2320_get_CRC(unsigned int *CRC_data);
 unsigned int am2320_CRC16(unsigned char *ptr, uint8_t length);
 
 
-#define FUNCTION_CODE       0x03
-#define START_ADDRESS       0x00
-#define REGISTER_LENGTH     0x04
+#define AM2320_FUNCTION_CODE       0x03
+#define AM2320_START_ADDRESS       0x00
+#define AM2320_REGISTER_LENGTH     0x04
 
 #endif /* AM2320_I2C_H_ */

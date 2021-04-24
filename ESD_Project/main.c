@@ -13,8 +13,8 @@
 
 int32_t am2320_poll_frequency;
 
-float am2320_temp_in_degC = 20.0;
-float am2320_humidity = 35.0;
+volatile float am2320_temp_in_degC;
+volatile float am2320_humidity;
 
 extern uint8_t am2320_databuffer[8];
 void am2320_temparutre_humidity_measureent();
@@ -45,6 +45,8 @@ void main(void)
             printf("am2320_poll_frequency::%d\r\n",am2320_poll_frequency);
 #endif
 
+            si7021_temperature_humidity_measurement();
+
             calculate_rtc_time(rtc_buffer);
             strcpy(displaystring,rtc_buffer);
 
@@ -57,7 +59,7 @@ void main(void)
             strncat(displaystring,humiditybuffer,strlen(humiditybuffer));
 
             strncat(displaystring,"\r\n",strlen("\r\n"));
-            printf("%s",displaystring);
+            //printf("%s",displaystring);
 
             strcpy(lcd_string,"Temp(*c):");
             strncat(lcd_string,temperaturebuff,strlen(temperaturebuff));
@@ -69,7 +71,7 @@ void main(void)
             set_address(0, 3);
             write_string_to_lcd(lcd_string);
             set_address(0, 4);
-            write_string_to_lcd("Battery level:");
+//            //write_string_to_lcd("Battery level:");
 
             cbfifo_enqueue(&cbfifo_tx,displaystring,strlen(displaystring));
 
@@ -79,6 +81,7 @@ void main(void)
 
         __sleep();
         __no_operation();
+
     }
 
 }
@@ -102,6 +105,12 @@ void init_routine()
 
     init_lcd();
 
+    si7021_i2c_init();
+
+    reset_timer();
+    while(delay_msec() < 5);
+    //si7021_temperature_humidity_measurement();
+
 }
 
 void am2320_temparutre_humidity_measureent()
@@ -121,7 +130,7 @@ void am2320_temparutre_humidity_measureent()
     reset_timer();
     while(delay_msec() < 5);
 
-    am2320_i2c_write_data(FUNCTION_CODE,START_ADDRESS,REGISTER_LENGTH,3);
+    am2320_i2c_write_data(AM2320_FUNCTION_CODE,AM2320_START_ADDRESS,AM2320_REGISTER_LENGTH,3);
 
     reset_timer();
     while(delay_msec() < 2);
@@ -142,8 +151,8 @@ void am2320_temparutre_humidity_measureent()
         printf("RH::%x\n",am2320_RH/10);
         printf("T::%x\n",am2320_T/10);
         printf("New data\n");
-        printf("RH::%f\n",am2320_temp_in_degC);
-        printf("T::%f\n",am2320_humidity);
+        //printf("RH::%f\n",am2320_temp_in_degC);
+        //printf("T::%f\n",am2320_humidity);
 
     }
     else

@@ -7,7 +7,7 @@
 #include <am2320_i2c.h>
 
 
-#define I2C_AM2320_ADDRESS          0x5C
+#define AM2320_I2C_ADDRESS          0x5C
 
 #define EUSCI_I2C_I2CSA             EUSCI_B0->I2CSA
 #define EUSCI_I2C_BRW               EUSCI_B0->BRW
@@ -56,11 +56,11 @@ void am2320_i2c_init()
             EUSCI_B_CTLW0_MODE_3 |          // I2C mode
             EUSCI_B_CTLW0_MST |             // Master mode
             EUSCI_B_CTLW0_SYNC |            // Sync mode
-            EUSCI_B_CTLW0_SSEL__SMCLK;      // SMCLK
+            EUSCI_B_CTLW0_SSEL__SMCLK;      // SMCLK -> 12 Mhz/ previous was 3 Mhz
 
-    EUSCI_I2C_BRW = 70;                     // baudrate = SMCLK / 30 = 100kHz
-    EUSCI_I2C_I2CSA = I2C_AM2320_ADDRESS;               // Slave address
-    EUSCI_I2C_CTLW0 &= ~EUSCI_B_CTLW0_SWRST;// Release eUSCI from reset
+    EUSCI_I2C_BRW = 70;    //300 (40K hz when 12Mhz is freq) //70 when 3Mhz freq   // baudrate = SMCLK / 30 = 100kHz
+    EUSCI_I2C_I2CSA = AM2320_I2C_ADDRESS;               // Slave address
+    EUSCI_I2C_CTLW0 &= ~EUSCI_B_CTLW0_SWRST;    // Release eUSCI from reset
 
 }
 
@@ -68,7 +68,7 @@ void am2320_i2c_init()
 void am2320_i2c_write_wakeup()
 {
     /* Write slave address */
-    EUSCI_I2C_I2CSA = I2C_AM2320_ADDRESS;                  // Slave address
+    EUSCI_I2C_I2CSA = AM2320_I2C_ADDRESS;                  // Slave address
 
     /* Transmit mode */
     EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TR;
@@ -100,7 +100,7 @@ void am2320_i2c_write_data(uint8_t function_code ,uint8_t start_address ,uint8_t
     am2320_databuffer[2] = registerlength;
 
     /* Write slave address */
-    EUSCI_I2C_I2CSA = I2C_AM2320_ADDRESS;                  // Slave address
+    EUSCI_I2C_I2CSA = AM2320_I2C_ADDRESS;                  // Slave address
 
     /* Transmit mode */
     EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TR;
@@ -109,7 +109,7 @@ void am2320_i2c_write_data(uint8_t function_code ,uint8_t start_address ,uint8_t
     EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TXSTT;
 
     /* Wait until slave address is sent */
-    while(EUSCI_I2C_CTLW0 & EUSCI_B_CTLW0_TXSTT);
+    while(EUSCI_I2C_CTLW0 & EUSCI_I2C_CTLW0_TXSTT);
 
     reset_timer();
     while(delay_msec() < 1);
@@ -137,14 +137,13 @@ void am2320_i2c_write_data(uint8_t function_code ,uint8_t start_address ,uint8_t
 
 void am2320_i2c_read_data(uint8_t bytes_read)
 {
-
     uint8_t i = 0;
 
     // Initialize data variable
     am2320_clear_i2c_buffer();
 
     /* Write slave address */
-    EUSCI_I2C_I2CSA = I2C_AM2320_ADDRESS;                  // Slave address
+    EUSCI_I2C_I2CSA = AM2320_I2C_ADDRESS;                  // Slave address
 
     /* Receiver mode */
     EUSCI_I2C_CTLW0 &= ~EUSCI_I2C_CTLW0_TR;

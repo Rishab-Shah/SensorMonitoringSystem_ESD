@@ -17,6 +17,7 @@ ORDERED_OBJS += \
 "./lcd_spi.obj" \
 "./main.obj" \
 "./rtc.obj" \
+"./si7021_i2c.obj" \
 "./startup_msp432p401r_ccs.obj" \
 "./switch.obj" \
 "./system_msp432p401r.obj" \
@@ -165,8 +166,8 @@ ESD_Project.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "am2320_i2c.obj" "cbfifo.obj" "gpio.obj" "i2c_bitbang.obj" "lcd_spi.obj" "main.obj" "rtc.obj" "startup_msp432p401r_ccs.obj" "switch.obj" "system_msp432p401r.obj" "systimer.obj" "uart.obj" 
-	-$(RM) "am2320_i2c.d" "cbfifo.d" "gpio.d" "i2c_bitbang.d" "lcd_spi.d" "main.d" "rtc.d" "startup_msp432p401r_ccs.d" "switch.d" "system_msp432p401r.d" "systimer.d" "uart.d" 
+	-$(RM) "am2320_i2c.obj" "cbfifo.obj" "gpio.obj" "i2c_bitbang.obj" "lcd_spi.obj" "main.obj" "rtc.obj" "si7021_i2c.obj" "startup_msp432p401r_ccs.obj" "switch.obj" "system_msp432p401r.obj" "systimer.obj" "uart.obj" 
+	-$(RM) "am2320_i2c.d" "cbfifo.d" "gpio.d" "i2c_bitbang.d" "lcd_spi.d" "main.d" "rtc.d" "si7021_i2c.d" "startup_msp432p401r_ccs.d" "switch.d" "system_msp432p401r.d" "systimer.d" "uart.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

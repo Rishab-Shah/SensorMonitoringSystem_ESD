@@ -21,4 +21,7 @@
 #include "uart.h"
 #include "string.h"
 #include "cbfifo.h"
+#include "si7021_i2c.h"
+
+
 #endif /* MAIN_H_ */

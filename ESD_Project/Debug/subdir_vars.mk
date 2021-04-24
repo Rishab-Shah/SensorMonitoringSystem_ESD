@@ -16,6 +16,7 @@ C_SRCS += \
 ../lcd_spi.c \
 ../main.c \
 ../rtc.c \
+../si7021_i2c.c \
 ../startup_msp432p401r_ccs.c \
 ../switch.c \
 ../system_msp432p401r.c \
@@ -30,6 +31,7 @@ C_DEPS += \
 ./lcd_spi.d \
 ./main.d \
 ./rtc.d \
+./si7021_i2c.d \
 ./startup_msp432p401r_ccs.d \
 ./switch.d \
 ./system_msp432p401r.d \
@@ -44,6 +46,7 @@ OBJS += \
 ./lcd_spi.obj \
 ./main.obj \
 ./rtc.obj \
+./si7021_i2c.obj \
 ./startup_msp432p401r_ccs.obj \
 ./switch.obj \
 ./system_msp432p401r.obj \
@@ -58,6 +61,7 @@ OBJS__QUOTED += \
 "lcd_spi.obj" \
 "main.obj" \
 "rtc.obj" \
+"si7021_i2c.obj" \
 "startup_msp432p401r_ccs.obj" \
 "switch.obj" \
 "system_msp432p401r.obj" \
@@ -72,6 +76,7 @@ C_DEPS__QUOTED += \
 "lcd_spi.d" \
 "main.d" \
 "rtc.d" \
+"si7021_i2c.d" \
 "startup_msp432p401r_ccs.d" \
 "switch.d" \
 "system_msp432p401r.d" \
@@ -86,6 +91,7 @@ C_SRCS__QUOTED += \
 "../lcd_spi.c" \
 "../main.c" \
 "../rtc.c" \
+"../si7021_i2c.c" \
 "../startup_msp432p401r_ccs.c" \
 "../switch.c" \
 "../system_msp432p401r.c" \

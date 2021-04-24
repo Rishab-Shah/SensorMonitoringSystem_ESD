@@ -99,7 +99,7 @@ void spi_config()
 
     EUSCI_SPI_CTLW0 &= ~EUSCI_B_CTLW0_SWRST;         // Initialize USCI state machine
 
-    __delay_cycles(500000);
+    __delay_cycles(500000);                         //calculated based upon 12Mhz frequency
 
 }
 
@@ -120,7 +120,7 @@ void init_lcd()
     clear_lcd();
 
     set_address(0, 0);
-    write_string_to_lcd("Sensor Monitor    System");
+    write_string_to_lcd("Sensor Monitor   System");
 }
 
 
@@ -128,7 +128,7 @@ void write_to_lcd(uint8_t command, uint8_t data)
 {
     /* select cs to be low */
     LCD5110_CHIP_SELECT;
-    delay_usec(2);
+    delay_usec(2);   //8 usec delay for 12Mhz clock
 
     if(command)
     {

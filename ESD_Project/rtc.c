@@ -36,7 +36,7 @@ void rtc_init()
     //Set RTC
     RTC_C->YEAR = 0x2021;                           // Year = 0x2021
     RTC_C->DATE = (0x11 << RTC_C_DATE_MON_OFS) |    // Month = 0x04 = November
-         (0x25 | RTC_C_DATE_DAY_OFS);               // Day = 0x25 = 25th
+         (0x24 | RTC_C_DATE_DAY_OFS);               // Day = 0x25 = 25th
     RTC_C->TIM1 = (0x01 << RTC_C_TIM1_DOW_OFS) |    // Day of week = 0x01 = Monday
          (0x23 << RTC_C_TIM1_HOUR_OFS);             // Hour = 0x11
     RTC_C->TIM0 = (0x59 << RTC_C_TIM0_MIN_OFS) |    // Minute = 0x59

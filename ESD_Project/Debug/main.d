@@ -34,6 +34,7 @@ main.obj: ../uart.h
 main.obj: ../cbfifo.h
 main.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdlib.h
 main.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/string.h
+main.obj: ../si7021_i2c.h
 
 ../main.c: 
 C:/ti/ccs1020/ccs/ccs_base/arm/include/msp.h: 
@@ -69,3 +70,4 @@ C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdarg.h:
 ../cbfifo.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdlib.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/string.h: 
+../si7021_i2c.h: 
