@@ -28,23 +28,22 @@ Function prototype
 *******************************************************************************/
 void EUSCIA0_IRQHandler(void)
 {
-    //int temp = 0;
-    uint8_t out_storage;
+    uint8_t temp_char;
 
     if (EUSCI_A0->IFG & EUSCI_A_IFG_RXIFG)
     {
         /* Echo the received character back */
-        in_storage = EUSCI_A0->RXBUF;
+        temp_char = EUSCI_A0->RXBUF;
 
-        cbfifo_enqueue(&cbfifo_rx,&in_storage,1);
+        cbfifo_enqueue(&cbfifo_rx,&temp_char,1);
     }
 
     if(EUSCI_A0->IFG & EUSCI_A_IFG_TXIFG)
     {
-        if(cbfifo_dequeue(&cbfifo_tx,&out_storage,1))
+        if(cbfifo_dequeue(&cbfifo_tx,&temp_char,1))
         {
             /* transmit the byte */
-            EUSCI_A0->TXBUF = out_storage;
+            EUSCI_A0->TXBUF = temp_char;
         }
         else
         {

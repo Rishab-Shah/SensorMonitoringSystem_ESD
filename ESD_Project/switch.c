@@ -18,6 +18,7 @@ extern int32_t am2320_poll_frequency;
 #define INC_PERCENT                     1000
 #define DEC_PERCENT                     1000
 
+static void switch_interrupt_init();
 /*******************************************************************************
 Function definition
 *******************************************************************************/
@@ -44,6 +45,8 @@ void switch_init()
 
     P2->SEL0 &= ~(BIT1);
     P2->SEL1 &= ~(BIT1);
+
+    switch_interrupt_init();
 
 }
 
@@ -85,7 +88,7 @@ void led_port_init()
 * @input param : None
 * @return: None
 *******************************************************************************/
-void switch_interrupt_init()
+static void switch_interrupt_init()
 {
     P1->IES |= BIT4;                        // Interrupt on high-to-low transition
     P1->IES |= BIT1;                        // Interrupt on high-to-low transition

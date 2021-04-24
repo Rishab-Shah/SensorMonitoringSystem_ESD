@@ -4,7 +4,7 @@
  *  Created on: 11-Apr-2021
  *      Author: HP
  */
-#include "i2c.h"
+#include <am2320_i2c.h>
 
 
 #define I2C_AM2320_ADDRESS          0x5C
@@ -25,24 +25,24 @@
 #define EUSCI_I2C_IFG_RXIFG0        EUSCI_B_IFG_RXIFG0
 
 
-uint8_t data_buffer[8];
+uint8_t am2320_databuffer[8];
 
 void delay_usec(int n);
 
-void clear_i2c_buffer()
+void am2320_clear_i2c_buffer()
 {
     // Initialize data variable
     uint8_t s = 0;
 
     for(s = 0; s< 8; s++)
     {
-        data_buffer[s] = 0x00;
+        am2320_databuffer[s] = 0x00;
     }
 }
 
-void i2c_init()
+void am2320_i2c_init()
 {
-    clear_i2c_buffer();
+    am2320_clear_i2c_buffer();
 
     SEL_0 |= SDA | SCL;                // I2C pins
 
@@ -65,7 +65,7 @@ void i2c_init()
 }
 
 
-void i2c_write_wakeup()
+void am2320_i2c_write_wakeup()
 {
     /* Write slave address */
     EUSCI_I2C_I2CSA = I2C_AM2320_ADDRESS;                  // Slave address
@@ -90,14 +90,14 @@ void i2c_write_wakeup()
 }
 
 
-void i2c_write_data(uint8_t function_code ,uint8_t start_address ,uint8_t registerlength,uint8_t length_data)
+void am2320_i2c_write_data(uint8_t function_code ,uint8_t start_address ,uint8_t registerlength,uint8_t length_data)
 {
     // Initialize data variable
-    clear_i2c_buffer();
+    am2320_clear_i2c_buffer();
 
-    data_buffer[0] = function_code;
-    data_buffer[1] = start_address;
-    data_buffer[2] = registerlength;
+    am2320_databuffer[0] = function_code;
+    am2320_databuffer[1] = start_address;
+    am2320_databuffer[2] = registerlength;
 
     /* Write slave address */
     EUSCI_I2C_I2CSA = I2C_AM2320_ADDRESS;                  // Slave address
@@ -122,7 +122,7 @@ void i2c_write_data(uint8_t function_code ,uint8_t start_address ,uint8_t regist
     for(i = 0; i<length_data; i++)
     {
         delay_usec(2);
-        I2C_TXBUF = data_buffer[i];
+        I2C_TXBUF = am2320_databuffer[i];
         while(!(EUSCI_I2C_IFG & EUSCI_I2C_IFG_TXIFG0));
     }
 
@@ -135,13 +135,13 @@ void i2c_write_data(uint8_t function_code ,uint8_t start_address ,uint8_t regist
 }
 
 
-void i2c_read_data(uint8_t bytes_read)
+void am2320_i2c_read_data(uint8_t bytes_read)
 {
 
     uint8_t i = 0;
 
     // Initialize data variable
-    clear_i2c_buffer();
+    am2320_clear_i2c_buffer();
 
     /* Write slave address */
     EUSCI_I2C_I2CSA = I2C_AM2320_ADDRESS;                  // Slave address
@@ -162,64 +162,56 @@ void i2c_read_data(uint8_t bytes_read)
     {
        delay_usec(2);
        while(!(EUSCI_I2C_IFG & EUSCI_I2C_IFG_RXIFG0));  /* wait till data is received */
-       data_buffer[i] = I2C_RXBUF;
+       am2320_databuffer[i] = I2C_RXBUF;
     }
 
     /* Transmit stop condition */
     EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TXSTP;
 
     while(!(EUSCI_I2C_IFG & EUSCI_I2C_IFG_RXIFG0));  /* wait till data is received */
-    data_buffer[i] = I2C_RXBUF;
+    am2320_databuffer[i] = I2C_RXBUF;
 
     while(EUSCI_I2C_CTLW0 & EUSCI_I2C_CTLW0_TXSTP);
 }
 
 
-void get_RH_and_temperature(unsigned int *data1, signed int *data2)
+void am2320_get_RH_and_temperature(unsigned int *data1, signed int *data2)
 {
-     *data1 = ((unsigned int)((data_buffer[2] << 8) | data_buffer[3]));
-     *data2 = ((data_buffer[4] << 8) | data_buffer[5]);
+     *data1 = ((unsigned int)((am2320_databuffer[2] << 8) | am2320_databuffer[3]));
+     *data2 = ((am2320_databuffer[4] << 8) | am2320_databuffer[5]);
 }
 
 
-void get_CRC(unsigned int *CRC_data)
+void am2320_get_CRC(unsigned int *CRC_data)
 {
-     *CRC_data = ((unsigned int)((data_buffer[7] << 8) | data_buffer[6]));
+     *CRC_data = ((unsigned int)((am2320_databuffer[7] << 8) | am2320_databuffer[6]));
 }
 
 
-unsigned int CRC16(unsigned char *ptr, unsigned char length)
+unsigned int am2320_CRC16(unsigned char *ptr, uint8_t length)
 {
-      unsigned int crc = 0xFFFF;
-      unsigned char s = 0x00;
+    unsigned int crc = 0xFFFF;
+    uint8_t s = 0x00;
 
-      while(length--)
-      {
+    while(length--)
+    {
         crc ^= *ptr++;
         for(s = 0; s < 8; s++)
         {
-          if((crc & 0x01) != 0)
-          {
-            crc >>= 1;
-            crc ^= 0xA001;
-          }
-          else
-          {
-            crc >>= 1;
-          }
+            if((crc & 0x01) != 0)
+            {
+                crc >>= 1;
+                crc ^= 0xA001;
+            }
+            else
+            {
+                crc >>= 1;
+            }
         }
-      }
+    }
 
-      return crc;
+    return crc;
 }
 
 
-/* 1 count = 10usec approx */
-void delay_usec(int n)
-{
-    int i, j;
-
-    for (j = 0; j < n; j++)
-        for (i = 1; i > 0; i--);      /* delay 10usec */
-}
 

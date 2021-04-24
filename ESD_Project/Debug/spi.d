@@ -2,6 +2,7 @@
 
 spi.obj: ../spi.c
 spi.obj: ../spi.h
+spi.obj: C:/Users/HP/workspace_v10/ESD_Project/pcd8544.h
 spi.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/msp.h
 spi.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/msp432p401r.h
 spi.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdint.h
@@ -25,6 +26,7 @@ spi.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdarg.h
 
 ../spi.c: 
 ../spi.h: 
+C:/Users/HP/workspace_v10/ESD_Project/pcd8544.h: 
 C:/ti/ccs1020/ccs/ccs_base/arm/include/msp.h: 
 C:/ti/ccs1020/ccs/ccs_base/arm/include/msp432p401r.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdint.h: 

@@ -13,13 +13,13 @@ Header files
 *******************************************************************************/
 #include "stdio.h"
 #include "msp.h"
-#include "macros.h"
+//#include "macros.h"
 /*******************************************************************************
 Function declarations
 *******************************************************************************/
 void led_port_init();
 void switch_init();
-void switch_interrupt_init();
+
 void PORT1_IRQHandler(void);
 
 

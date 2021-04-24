@@ -18,14 +18,12 @@
 #ifndef I2CFILES_H
 #define I2CFILES_H
 
+#include <am2320_i2c.h>
 #include <stdint.h>
 #include <stdio.h>
 #include "msp.h"
 
-#include "i2c.h"
 
-#define HIGH            1
-#define LOW             0
 
 
 #define WRITE           0
@@ -33,20 +31,19 @@
 
 #define I2C_DELAY       2
 
-void SendNACK(void);
+void send_nack(void);
 void SendACK();
 void restart_bit();
 unsigned char i2c_read_operation();
-uint8_t i2c_write_operation_wakeup(uint8_t Txdata);
+uint8_t am2320_i2c_write_operation_wakeup(uint8_t Txdata);
 void mydelay(uint8_t data);
 void bus_no_busy_state();
 void stop_bit();
 void start_bit();
-void PollAck();
+void poll_ack();
 
-uint8_t eebytew(uint8_t blocknumber, uint8_t addr,uint8_t databyte);
-uint8_t eebyter(uint8_t blocknumber,uint8_t addr,uint8_t blocknumberread);
-void reset_eeprom();
+
+
 void init_i2c_bitbang();
 
 #endif

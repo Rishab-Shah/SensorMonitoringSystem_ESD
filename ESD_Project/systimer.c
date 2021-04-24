@@ -69,3 +69,14 @@ int delay_msec()
 {
     return g_counter2;
 }
+
+
+/* 1 count = 10usec approx */
+void delay_usec(int n)
+{
+    int i, j;
+
+    for (j = 0; j < n; j++)
+        for (i = 1; i > 0; i--);      /* delay 10usec */
+}
+

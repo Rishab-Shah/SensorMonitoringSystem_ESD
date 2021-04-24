@@ -8,10 +8,12 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
-#include "systimer.h"
-#include "i2c.h"
+#include <am2320_i2c.h>
+#include <lcd_spi.h>
 #include <stdint.h>
 #include <stdio.h>
+
+#include "systimer.h"
 #include "switch.h"
 #include "gpio.h"
 #include "i2c_bitbang.h"

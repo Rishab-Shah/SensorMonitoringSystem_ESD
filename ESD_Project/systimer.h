@@ -22,7 +22,6 @@
 void TA0_0_IRQHandler(void);
 void init_timer();
 void reset_timer();
-//void delay_msec(uint32_t time_requested);
 int delay_msec();
-
+void delay_usec(int n);
 #endif /* SYSTIMER_H_ */

@@ -15,39 +15,45 @@
 #include "i2c_bitbang.h"
 /* The function puts a start condition on the bus*/
 
+//#include "macros.h"
+#define SET_SDA_HIGH                            P1->OUT |= SDA
+#define SET_SDA_LOW                             P1->OUT &= ~SDA
+#define SET_SCL_HIGH                            P1->OUT |= SCL
+#define SET_SCL_LOW                             P1->OUT &= ~SCL
+
 void set_sda(uint8_t value);
-void set_scl(uint8_t value);
 void init_i2c_bitbang();
+
 void start_bit()
 {
-    set_sda(HIGH);
+    SET_SDA_HIGH;
     mydelay(I2C_DELAY);
 
-    set_scl(HIGH);
+    SET_SCL_HIGH;
     mydelay(I2C_DELAY);
 
-    set_sda(LOW);
+    /* Transition from high to low detected when SCL is high */
+    SET_SDA_LOW;
     mydelay(I2C_DELAY);
 
-    set_scl(LOW);
+    SET_SCL_LOW;
     mydelay(I2C_DELAY);
-
 }
 
 /* The function puts a stop condition on the bus*/
 void stop_bit()
 {
-   set_scl(LOW);
+   SET_SCL_LOW;
    mydelay(I2C_DELAY);
 
-   set_sda(LOW);
+   SET_SDA_LOW;
    mydelay(I2C_DELAY);
 
-   set_scl(HIGH);
+   SET_SCL_HIGH;
    mydelay(I2C_DELAY);
 
    /* Transition from low to high detected when SCL is high */
-   set_sda(HIGH);
+   SET_SDA_HIGH;
    mydelay(I2C_DELAY);
 
 }
@@ -55,20 +61,11 @@ void stop_bit()
 /* The function puts the bus in no busy state*/
 void bus_no_busy_state()
 {
-   set_sda(HIGH);
+   SET_SDA_HIGH;
 
-   set_scl(HIGH);
+   SET_SCL_HIGH;
 }
 
-/* The function initalised the bus */
-/*
-void i2c_init()
-{
-   SDA = LOW;
-
-   SCL = LOW;
-}
-*/
 /* The function provides a software delay for triggering the timing.
 chosen empircally as I2C_DELAY = 1 */
 void mydelay(uint8_t data)
@@ -80,14 +77,14 @@ void mydelay(uint8_t data)
 }
 
 /* This performs a write operation on the bus for the 8 bits passed */
-uint8_t i2c_write_operation_wakeup(uint8_t Txdata)
+uint8_t am2320_i2c_write_operation_wakeup(uint8_t Txdata)
 {
     init_i2c_bitbang();
 
     start_bit();
 
     /* Ensure SCL is low before SDA sends data to make a proper read */
-    set_scl(LOW);
+    SET_SCL_LOW;
     mydelay(I2C_DELAY);
     uint8_t temp;
 
@@ -99,24 +96,24 @@ uint8_t i2c_write_operation_wakeup(uint8_t Txdata)
         mydelay(I2C_DELAY);
 
         /* change SCL to high to read the recent bit transition*/
-        set_scl(HIGH);
+        SET_SCL_HIGH;
         mydelay(I2C_DELAY);
 
         /*Prepare bus for next bit change*/
-        set_scl(LOW);
+        SET_SCL_LOW;
         mydelay(I2C_DELAY);
     }
 
-    set_sda(HIGH);
+    SET_SDA_HIGH;
     mydelay(I2C_DELAY);
 
-    set_scl(HIGH);
+    SET_SCL_HIGH;
     mydelay(I2C_DELAY);
 
-    set_scl(LOW);
+    SET_SCL_LOW;
     mydelay(I2C_DELAY);
 
-    set_sda(LOW);
+    SET_SDA_LOW;
     mydelay(I2C_DELAY);
 
 //-----------------------------------------------------------
@@ -135,8 +132,7 @@ unsigned char i2c_read_operation()
 {
     uint8_t Data1 = 0;
     /* Ensure SCL is low before SDA sends data to make a proper read */
-    //SCL = LOW;
-    set_scl(LOW);
+    SET_SCL_LOW;
     mydelay(I2C_DELAY);
 
     for(uint8_t i = 8; i > 0; i--)
@@ -146,13 +142,11 @@ unsigned char i2c_read_operation()
         mydelay(I2C_DELAY);
 
         /* change SCL to high to read the recent bit transition*/
-        //SCL = HIGH;
-        set_scl(HIGH);
+        SET_SCL_HIGH;
         mydelay(I2C_DELAY);
 
         /*Prepare bus for next bit change*/
-        //SCL = LOW;
-        set_scl(LOW);
+        SET_SCL_LOW;
         mydelay(I2C_DELAY);
     }
 
@@ -163,59 +157,60 @@ unsigned char i2c_read_operation()
 /* This is used to send an ack during sequential read */
 void SendACK()
 {
-    set_sda(LOW);
+    SET_SDA_LOW;
     mydelay(I2C_DELAY);
 
-    set_scl(HIGH);
+    SET_SCL_HIGH;
     mydelay(I2C_DELAY);
 
-    set_scl(LOW);
+    SET_SCL_LOW;
     mydelay(I2C_DELAY);
 
-    set_sda(HIGH);
+    SET_SDA_HIGH;
     mydelay(I2C_DELAY);
 }
 
 /* This is used to prepare a restart sequence */
 void restart_bit()
 {
-    set_sda(HIGH);
+    SET_SDA_HIGH;
     mydelay(I2C_DELAY);
 
-    set_scl(HIGH);
+    SET_SCL_HIGH;
     mydelay(I2C_DELAY);
 
-    set_sda(LOW);
+    SET_SDA_LOW;
     mydelay(I2C_DELAY);
 
-    set_scl(LOW);
+    SET_SCL_LOW;
     mydelay(I2C_DELAY);
 }
 
 /* This is used to send a NACK during the end of read sequence*/
-void SendNACK(void)
+void send_nack(void)
 {
-    set_sda(HIGH);
+    SET_SDA_HIGH;
     mydelay(I2C_DELAY);
 
-    set_scl(HIGH);
+    SET_SCL_HIGH;
     mydelay(I2C_DELAY);
 }
 
 /* This is used to poll for the ack from the slave during write opearation */
-void PollAck()
+void poll_ack()
 {
-    set_scl(HIGH);
+    SET_SCL_HIGH;
     mydelay(I2C_DELAY);
 
-    while(SDA == HIGH)
+    /*while(SDA == HIGH)
     {
         ;
-    }
+    }*/
 
-    set_scl(LOW);
+    SET_SCL_LOW;
     mydelay(I2C_DELAY);
 }
+
 
 void set_sda(uint8_t value)
 {
@@ -228,7 +223,7 @@ void set_sda(uint8_t value)
         P1->OUT &= ~SDA;
     }
 }
-
+/*
 void set_scl(uint8_t value)
 {
     if(value != 0)
@@ -240,39 +235,7 @@ void set_scl(uint8_t value)
         P1->OUT &= ~SCL;
     }
 }
-
-
-#if 0
-/* This is used to write the data into eeprom in a particular memory location */
-uint8_t eebytew(uint8_t blocknumber, uint8_t addr,uint8_t databyte)
-{
-    start_bit();
-    i2c_write_operation(blocknumber);
-    i2c_write_operation(addr);
-    i2c_write_operation(databyte);
-    stop_bit();
-    return 0;
-}
-
-/* This is used to read the data from the eeprom  from a particular memory location
-The implementation is for random read */
-uint8_t eebyter(uint8_t blocknumber,uint8_t addr,uint8_t blocknumberread)
-{
-    uint8_t datastore;
-    start_bit();
-    i2c_write_operation(blocknumber);       //control byte - write
-    i2c_write_operation(addr);              //word address
-    start_bit();
-    i2c_write_operation(blocknumberread);   //control byte
-    datastore = i2c_read_operation();       //read data
-    SendNACK();
-    stop_bit();
-    return datastore;
-}
-
-#endif
-
-
+*/
 void init_i2c_bitbang()
 {
     //Configure GPIO

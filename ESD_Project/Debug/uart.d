@@ -22,7 +22,6 @@ uart.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/core_cm4.h
 uart.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_compiler.h
 uart.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_ccs.h
 uart.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/system_msp432p401r.h
-uart.obj: ../macros.h
 uart.obj: ../cbfifo.h
 uart.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdlib.h
 
@@ -48,6 +47,5 @@ C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/core_cm4.h:
 C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_compiler.h: 
 C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_ccs.h: 
 C:/ti/ccs1020/ccs/ccs_base/arm/include/system_msp432p401r.h: 
-../macros.h: 
 ../cbfifo.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdlib.h: 

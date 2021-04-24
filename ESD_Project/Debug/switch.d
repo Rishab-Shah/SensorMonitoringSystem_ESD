@@ -22,7 +22,6 @@ switch.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/core_cm4.h
 switch.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_compiler.h
 switch.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_ccs.h
 switch.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/system_msp432p401r.h
-switch.obj: ../macros.h
 
 ../switch.c: 
 ../switch.h: 
@@ -46,4 +45,3 @@ C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/core_cm4.h:
 C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_compiler.h: 
 C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_ccs.h: 
 C:/ti/ccs1020/ccs/ccs_base/arm/include/system_msp432p401r.h: 
-../macros.h: 

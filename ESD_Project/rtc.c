@@ -35,11 +35,11 @@ void rtc_init()
 
     //Set RTC
     RTC_C->YEAR = 0x2021;                           // Year = 0x2021
-    RTC_C->DATE = (0x11 << RTC_C_DATE_MON_OFS) |    // Month = 0x11 = November
+    RTC_C->DATE = (0x11 << RTC_C_DATE_MON_OFS) |    // Month = 0x04 = November
          (0x25 | RTC_C_DATE_DAY_OFS);               // Day = 0x25 = 25th
     RTC_C->TIM1 = (0x01 << RTC_C_TIM1_DOW_OFS) |    // Day of week = 0x01 = Monday
-         (0x10 << RTC_C_TIM1_HOUR_OFS);             // Hour = 0x10
-    RTC_C->TIM0 = (0x32 << RTC_C_TIM0_MIN_OFS) |    // Minute = 0x32
+         (0x23 << RTC_C_TIM1_HOUR_OFS);             // Hour = 0x11
+    RTC_C->TIM0 = (0x59 << RTC_C_TIM0_MIN_OFS) |    // Minute = 0x59
          (0x45 << RTC_C_TIM0_SEC_OFS);              // Seconds = 0x45
 
     //Star RTC In Calender Mode
@@ -51,18 +51,21 @@ void rtc_init()
 
 void calculate_rtc_time(char* timestamp)
 {
-    int Date,Month,Year,Hours,Min,Sec; // Declare Calender Variables to Read RTC
+    /* Declare Calender Variables to Read RTC */
+    int date,month,year,hour,min,sec;
+
     //Time Data conversion (BCD to Decimal)
-    Date = bcd_to_dec( RTCDAY);
-    Month = bcd_to_dec(RTCMON);
-    Year = bcd_to_dec( RTCYEAR);
+    date = bcd_to_dec( RTCDAY);
+    month = bcd_to_dec(RTCMON);
+    year = bcd_to_dec( RTCYEAR);
+
     //Time Data conversion (BCD to Decimal)
-    Hours = bcd_to_dec(RTCHOUR);
-    Min = bcd_to_dec(RTCMIN);
-    Sec = bcd_to_dec(RTCSEC);
+    hour = bcd_to_dec(RTCHOUR);
+    min = bcd_to_dec(RTCMIN);
+    sec = bcd_to_dec(RTCSEC);
 
     /* "DD:MM:YY:HH:MM:SS::*/
-    sprintf(timestamp,"%02d:%02d:%02d:%02d:%02d:%02d::",Date,Month,Year,Hours,Min,Sec);
+    sprintf(timestamp,"%02d:%02d:%02d:%02d:%02d:%02d::",date,month,year,hour,min,sec);
 }
 
 static uint8_t bcd_to_dec(uint8_t bcd_data)

@@ -18,7 +18,7 @@ Macros
 *******************************************************************************/
 #define ERROR                                (-1)
 #define START_CRITICAL_SECTION()             (EUSCI_A0->IE &= ~(EUSCI_A_IE_TXIE|EUSCI_A_IE_RXIE))
-#define END_CRITICAL_SECTION()              (EUSCI_A0->IE |= EUSCI_A_IE_TXIE|EUSCI_A_IE_RXIE)
+#define END_CRITICAL_SECTION()               (EUSCI_A0->IE |= EUSCI_A_IE_TXIE|EUSCI_A_IE_RXIE)
 /*******************************************************************************
 Function definitions
 *******************************************************************************/
@@ -47,7 +47,6 @@ size_t cbfifo_enqueue(CB_t *cbfifo,void *buf, size_t nbyte)
     uint16_t NoOfBytesCopied = 0;
     uint16_t l_traverse = 0;
     uint16_t Fifofilled = 0;
-    uint32_t mask_state = 0;
 
     for(l_traverse = 0;l_traverse < nbyte;l_traverse++)
     {
@@ -75,7 +74,6 @@ size_t cbfifo_enqueue(CB_t *cbfifo,void *buf, size_t nbyte)
             }
         }
 
-        mask_state = __get_PRIMASK();
         START_CRITICAL_SECTION();
 
         cbfifo->cbBuf[cbfifo->write] = *((uint8_t*)(buf+l_traverse));
@@ -83,7 +81,7 @@ size_t cbfifo_enqueue(CB_t *cbfifo,void *buf, size_t nbyte)
         cbfifo->write = (cbfifo->write+1)&(cbfifo->size-1);
         NoOfBytesCopied++;
 
-        END_CRITICAL_SECTION(/*mask_state*/);
+        END_CRITICAL_SECTION();
 
     }
 
@@ -122,7 +120,6 @@ size_t cbfifo_dequeue(CB_t *cbfifo,void *buf, size_t nbyte)
     uint16_t NoOfBytesCopied = 0;
     uint16_t l_traverse = 0;
     uint16_t Fifofilled = 0;
-    uint32_t mask_state = 0;
 
     for(l_traverse = 0;l_traverse < nbyte; l_traverse++)
     {
@@ -154,7 +151,6 @@ size_t cbfifo_dequeue(CB_t *cbfifo,void *buf, size_t nbyte)
             }
         }
 
-        mask_state = __get_PRIMASK();
         START_CRITICAL_SECTION();
 
         *((uint8_t*)(buf+l_traverse)) = cbfifo->cbBuf[cbfifo->read];
@@ -162,7 +158,7 @@ size_t cbfifo_dequeue(CB_t *cbfifo,void *buf, size_t nbyte)
         NoOfBytesCopied++;
         cbfifo->read = (cbfifo->read+1)&(cbfifo->size-1);
 
-        END_CRITICAL_SECTION(/*mask_state*/);
+        END_CRITICAL_SECTION();
     }
 
     return NoOfBytesCopied;

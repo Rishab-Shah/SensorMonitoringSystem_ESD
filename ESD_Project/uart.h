@@ -13,7 +13,7 @@ Header files
 *******************************************************************************/
 #include "stdio.h"
 #include "msp.h"
-#include "macros.h"
+//#include "macros.h"
 #include "cbfifo.h"
 /*******************************************************************************
 Function prototype

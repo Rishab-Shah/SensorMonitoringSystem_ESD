@@ -20,12 +20,13 @@ main.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_compiler.h
 main.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_ccs.h
 main.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/system_msp432p401r.h
 main.obj: ../main.h
-main.obj: ../systimer.h
-main.obj: ../i2c.h
+main.obj: C:/Users/HP/workspace_v10/ESD_Project/am2320_i2c.h
+main.obj: C:/Users/HP/workspace_v10/ESD_Project/systimer.h
+main.obj: C:/Users/HP/workspace_v10/ESD_Project/lcd_spi.h
+main.obj: C:/Users/HP/workspace_v10/ESD_Project/pcd8544.h
 main.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdio.h
 main.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdarg.h
 main.obj: ../switch.h
-main.obj: ../macros.h
 main.obj: ../gpio.h
 main.obj: ../i2c_bitbang.h
 main.obj: ../rtc.h
@@ -54,12 +55,13 @@ C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_compiler.h:
 C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_ccs.h: 
 C:/ti/ccs1020/ccs/ccs_base/arm/include/system_msp432p401r.h: 
 ../main.h: 
-../systimer.h: 
-../i2c.h: 
+C:/Users/HP/workspace_v10/ESD_Project/am2320_i2c.h: 
+C:/Users/HP/workspace_v10/ESD_Project/systimer.h: 
+C:/Users/HP/workspace_v10/ESD_Project/lcd_spi.h: 
+C:/Users/HP/workspace_v10/ESD_Project/pcd8544.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdio.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdarg.h: 
 ../switch.h: 
-../macros.h: 
 ../gpio.h: 
 ../i2c_bitbang.h: 
 ../rtc.h: 
