@@ -7,7 +7,7 @@
 #include "main.h"
 
 #define POLL_FREQ_AM2320                         (2000)
-#define TEMPERATURE_SWITCH                       (0)
+#define TEMPERATURE_AM2320                       (0)
 #define I2C_DATA_READ_BYTES                      (7)
 #define AM2320_BITBANG_ADDRESS                   (0xB8)
 
@@ -15,9 +15,11 @@ int32_t am2320_poll_frequency;
 
 volatile float am2320_temp_in_degC;
 volatile float am2320_humidity;
+volatile float si7021_temp_in_degC;
+volatile float si7021_humidity;
 
 extern uint8_t am2320_databuffer[8];
-void am2320_temparutre_humidity_measureent();
+void am2320_temparutre_humidity_measurement();
 void init_routine();
 
 void main(void)
@@ -39,13 +41,9 @@ void main(void)
         if(delay_msec() > am2320_poll_frequency)
         {
 
-#if TEMPERATURE_SWITCH
+#if TEMPERATURE_AM2320
 
             am2320_temparutre_humidity_measureent();
-            printf("am2320_poll_frequency::%d\r\n",am2320_poll_frequency);
-#endif
-
-            si7021_temperature_humidity_measurement();
 
             calculate_rtc_time(rtc_buffer);
             strcpy(displaystring,rtc_buffer);
@@ -58,9 +56,22 @@ void main(void)
             sprintf(humiditybuffer,"%2.2f",am2320_humidity);
             strncat(displaystring,humiditybuffer,strlen(humiditybuffer));
 
-            strncat(displaystring,"\r\n",strlen("\r\n"));
-            //printf("%s",displaystring);
+#else
+            si7021_temperature_humidity_measurement();
+            calculate_rtc_time(rtc_buffer);
+            strcpy(displaystring,rtc_buffer);
 
+            sprintf(temperaturebuff,"%2.2f",si7021_temp_in_degC);
+            strncat(displaystring,temperaturebuff,strlen(temperaturebuff));
+
+            strncat(displaystring,",",1);
+
+            sprintf(humiditybuffer,"%2.2f",si7021_humidity);
+            strncat(displaystring,humiditybuffer,strlen(humiditybuffer));
+#endif
+            strncat(displaystring,"\r\n",strlen("\r\n"));
+
+            /* Display on the LCD module */
             strcpy(lcd_string,"Temp(*c):");
             strncat(lcd_string,temperaturebuff,strlen(temperaturebuff));
             set_address(0, 2);
@@ -109,11 +120,10 @@ void init_routine()
 
     reset_timer();
     while(delay_msec() < 5);
-    //si7021_temperature_humidity_measurement();
 
 }
 
-void am2320_temparutre_humidity_measureent()
+void am2320_temparutre_humidity_measurement()
 {
     signed int am2320_T = 0x0000;
     unsigned int am2320_RH = 0x0000;
@@ -151,8 +161,8 @@ void am2320_temparutre_humidity_measureent()
         printf("RH::%x\n",am2320_RH/10);
         printf("T::%x\n",am2320_T/10);
         printf("New data\n");
-        //printf("RH::%f\n",am2320_temp_in_degC);
-        //printf("T::%f\n",am2320_humidity);
+        printf("RH::%f\n",am2320_temp_in_degC);
+        printf("T::%f\n",am2320_humidity);
 
     }
     else

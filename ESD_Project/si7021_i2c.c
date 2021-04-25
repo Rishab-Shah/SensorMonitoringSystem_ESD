@@ -28,11 +28,10 @@ uint8_t si7021_databuffer[8];
 
 void read_temperature();
 void read_humidity();
-float humidity;
-float temperature;
 
-extern float am2320_temp_in_degC;
-extern float am2320_humidity;
+extern float si7021_temp_in_degC;
+extern float si7021_humidity;
+
 void si7021_i2c_init()
 {
     si7021_clear_i2c_buffer();
@@ -189,6 +188,7 @@ void si7021_temperature_humidity_measurement()
 void read_humidity()
 {
     int hum;
+    float humidity;
 
     hum = ((si7021_databuffer[0] << 8) | si7021_databuffer[1]);
 
@@ -196,15 +196,13 @@ void read_humidity()
     humidity *= 125;
     humidity /= 65536;
     humidity -= 6;
-    am2320_humidity = humidity;
-    //humidity =  humidity > 100.0 ? 100.0 : humidity;
-    //printf("humidity %f\n",humidity);
-
+    si7021_humidity = humidity;
 }
 
 void read_temperature()
 {
     int temp;
+    float temperature;
 
     temp = ((si7021_databuffer[0] << 8) | si7021_databuffer[1]);
 
@@ -212,6 +210,5 @@ void read_temperature()
     temperature *= 175.72;
     temperature /= 65536;
     temperature -= 46.85;
-    am2320_temp_in_degC = temperature;
-    //printf("temperature %f\n",temperature);
+    si7021_temp_in_degC = temperature;
 }

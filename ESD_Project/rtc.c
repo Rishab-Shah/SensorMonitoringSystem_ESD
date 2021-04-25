@@ -33,7 +33,7 @@ void rtc_init()
     RTCCTL0_L &= ~(RTCTEVIFG);
     RTCCTL13 = RTCBCD | RTCHOLD ;
 
-    //Set RTC
+    /* Set RTC */
     RTC_C->YEAR = 0x2021;                           // Year = 0x2021
     RTC_C->DATE = (0x11 << RTC_C_DATE_MON_OFS) |    // Month = 0x04 = November
          (0x24 | RTC_C_DATE_DAY_OFS);               // Day = 0x25 = 25th
@@ -42,10 +42,10 @@ void rtc_init()
     RTC_C->TIM0 = (0x59 << RTC_C_TIM0_MIN_OFS) |    // Minute = 0x59
          (0x45 << RTC_C_TIM0_SEC_OFS);              // Seconds = 0x45
 
-    //Star RTC In Calender Mode
+    /* Start RTC In Calender Mode */
     RTCCTL1 &= ~(RTCHOLD);
 
-    //Lock the RTC Register after initialization
+    /* Lock the RTC Register after initialization */
     RTCCTL0_H= 0;
 }
 
@@ -54,12 +54,12 @@ void calculate_rtc_time(char* timestamp)
     /* Declare Calender Variables to Read RTC */
     int date,month,year,hour,min,sec;
 
-    //Time Data conversion (BCD to Decimal)
+    /* Time Data conversion (BCD to Decimal) */
     date = bcd_to_dec( RTCDAY);
     month = bcd_to_dec(RTCMON);
     year = bcd_to_dec( RTCYEAR);
 
-    //Time Data conversion (BCD to Decimal)
+    /* Time Data conversion (BCD to Decimal) */
     hour = bcd_to_dec(RTCHOUR);
     min = bcd_to_dec(RTCMIN);
     sec = bcd_to_dec(RTCSEC);
