@@ -29,9 +29,10 @@ void am2320_get_RH_and_temperature(unsigned int *data1, signed int *data2);
 void am2320_get_CRC(unsigned int *CRC_data);
 unsigned int am2320_CRC16(unsigned char *ptr, uint8_t length);
 
-
-#define AM2320_FUNCTION_CODE       0x03
-#define AM2320_START_ADDRESS       0x00
-#define AM2320_REGISTER_LENGTH     0x04
+#define AM2320_I2C_DATA_READ_BYTES                  (7)
+#define AM2320_BITBANG_ADDRESS                      (0xB8)
+#define AM2320_FUNCTION_CODE                        0x03
+#define AM2320_START_ADDRESS                        0x00
+#define AM2320_REGISTER_LENGTH                      0x04
 
 #endif /* AM2320_I2C_H_ */

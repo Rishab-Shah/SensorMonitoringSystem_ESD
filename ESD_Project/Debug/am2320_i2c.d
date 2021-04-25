@@ -21,6 +21,9 @@ am2320_i2c.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_compiler.h
 am2320_i2c.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_ccs.h
 am2320_i2c.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/system_msp432p401r.h
 am2320_i2c.obj: C:/Users/HP/workspace_v10/ESD_Project/systimer.h
+am2320_i2c.obj: ../i2c_bitbang.h
+am2320_i2c.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdio.h
+am2320_i2c.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdarg.h
 
 ../am2320_i2c.c: 
 C:/Users/HP/workspace_v10/ESD_Project/am2320_i2c.h: 
@@ -43,3 +46,6 @@ C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_compiler.h:
 C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_ccs.h: 
 C:/ti/ccs1020/ccs/ccs_base/arm/include/system_msp432p401r.h: 
 C:/Users/HP/workspace_v10/ESD_Project/systimer.h: 
+../i2c_bitbang.h: 
+C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdio.h: 
+C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdarg.h: 

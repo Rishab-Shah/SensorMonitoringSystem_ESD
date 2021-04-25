@@ -13,7 +13,7 @@ Header files
 /*******************************************************************************
 Global variables
 *******************************************************************************/
-extern int32_t am2320_poll_frequency;
+extern int32_t T_RH_poll_frequency;
 
 #define INC_PERCENT                     1000
 #define DEC_PERCENT                     1000
@@ -122,7 +122,7 @@ void PORT1_IRQHandler(void)
     {
         //P2->OUT ^= BIT2; //toggle blue
         /* Increase by 1000 */
-        temp_value = am2320_poll_frequency + INC_PERCENT;
+        temp_value = T_RH_poll_frequency + INC_PERCENT;
 
         if(temp_value > 10000)
         {
@@ -156,7 +156,7 @@ void PORT1_IRQHandler(void)
         //P2->OUT ^= BIT1; //toggle green
         /* decrease by 1000 */
 
-        temp_value = am2320_poll_frequency - DEC_PERCENT;
+        temp_value = T_RH_poll_frequency - DEC_PERCENT;
 
         if(temp_value < 2000)
         {
@@ -190,7 +190,7 @@ void PORT1_IRQHandler(void)
     P1->IFG &= ~BIT1;
 
     /* update the current ref value for pwm */
-    am2320_poll_frequency = temp_value;
+    T_RH_poll_frequency = temp_value;
 }
 
 /* EOF */

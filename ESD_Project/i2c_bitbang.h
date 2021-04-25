@@ -45,5 +45,6 @@ void poll_ack();
 
 
 void init_i2c_bitbang();
+uint8_t am2320_i2c_write_operation_wakeup(uint8_t Txdata);
 
 #endif

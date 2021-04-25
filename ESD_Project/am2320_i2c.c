@@ -5,7 +5,7 @@
  *      Author: HP
  */
 #include <am2320_i2c.h>
-
+#include "i2c_bitbang.h"
 
 #define AM2320_I2C_ADDRESS          0x5C
 
@@ -24,6 +24,8 @@
 #define EUSCI_I2C_IFG_TXIFG0        EUSCI_B_IFG_TXIFG0
 #define EUSCI_I2C_IFG_RXIFG0        EUSCI_B_IFG_RXIFG0
 
+extern float am2320_temp_in_degC;
+extern float am2320_humidity;
 
 uint8_t am2320_databuffer[8];
 
@@ -213,4 +215,53 @@ unsigned int am2320_CRC16(unsigned char *ptr, uint8_t length)
 }
 
 
+void am2320_temparutre_humidity_measurement()
+{
+    signed int am2320_T = 0x0000;
+    unsigned int am2320_RH = 0x0000;
+    unsigned int am2320_CRC_data = 0x0000;
+    unsigned int am2320_CRC_temp = 0x0000;
 
+    am2320_i2c_write_operation_wakeup(AM2320_BITBANG_ADDRESS);
+
+    reset_timer();
+    while(delay_msec() < 5);
+
+    am2320_i2c_init();
+
+    reset_timer();
+    while(delay_msec() < 5);
+
+    am2320_i2c_write_data(AM2320_FUNCTION_CODE,AM2320_START_ADDRESS,AM2320_REGISTER_LENGTH,3);
+
+    reset_timer();
+    while(delay_msec() < 2);
+
+    am2320_i2c_init();
+    am2320_i2c_read_data(AM2320_I2C_DATA_READ_BYTES);
+
+    am2320_get_RH_and_temperature(&am2320_RH, &am2320_T);
+    am2320_get_CRC(&am2320_CRC_temp);
+    am2320_CRC_data = am2320_CRC16(am2320_databuffer, 6);
+
+    if(am2320_CRC_temp == am2320_CRC_data)
+    {
+        am2320_temp_in_degC = (((am2320_databuffer[4] & 0x7F) << 8) + am2320_databuffer[5]) / 10.0;
+        am2320_temp_in_degC = (am2320_databuffer[4] & 0x80) ? -am2320_temp_in_degC : am2320_temp_in_degC;
+        am2320_humidity = ((am2320_databuffer[2] << 8) + am2320_databuffer[3]) / 10.0;
+
+        printf("RH::%x\n",am2320_RH/10);
+        printf("T::%x\n",am2320_T/10);
+        printf("New data\n");
+        printf("RH::%f\n",am2320_temp_in_degC);
+        printf("T::%f\n",am2320_humidity);
+
+    }
+    else
+    {
+        printf("error\n");
+    }
+
+    reset_timer();
+    while(delay_msec() < 10);
+}

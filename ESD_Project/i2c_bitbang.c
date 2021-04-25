@@ -15,7 +15,6 @@
 #include "i2c_bitbang.h"
 /* The function puts a start condition on the bus*/
 
-//#include "macros.h"
 #define SET_SDA_HIGH                            P1->OUT |= SDA
 #define SET_SDA_LOW                             P1->OUT &= ~SDA
 #define SET_SCL_HIGH                            P1->OUT |= SCL

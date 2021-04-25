@@ -53,8 +53,8 @@ void si7021_i2c_init()
             EUSCI_B_CTLW0_SYNC |                        // Sync mode
             EUSCI_B_CTLW0_SSEL__SMCLK;                  // SMCLK
 
-    SI7021_EUSCI_I2C_BRW = 120;                        // baudrate = 12Mhz/1200 => 10KHz
-    //can also be /120 -> 100Khz as max is 400Khz
+    SI7021_EUSCI_I2C_BRW = 120;                        // baudrate /120 -> 100Khz as max is 400Khz
+
     SI7021_EUSCI_I2C_I2CSA = I2C_SI7021_ADDRESS;        // Slave address
 
     SI7021_EUSCI_I2C_CTLW0 &= ~EUSCI_B_CTLW0_SWRST;     // Release eUSCI from reset

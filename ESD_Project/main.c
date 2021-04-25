@@ -6,12 +6,11 @@
  */
 #include "main.h"
 
-#define POLL_FREQ_AM2320                         (2000)
+#define T_RH_POLL_FREQ                           (2000)
 #define TEMPERATURE_AM2320                       (0)
-#define I2C_DATA_READ_BYTES                      (7)
-#define AM2320_BITBANG_ADDRESS                   (0xB8)
+#define HEART_BEAT
 
-int32_t am2320_poll_frequency;
+int32_t T_RH_poll_frequency;
 
 volatile float am2320_temp_in_degC;
 volatile float am2320_humidity;
@@ -34,16 +33,16 @@ void main(void)
 	char humiditybuffer[10];
 	char lcd_string[50];
 
-	am2320_poll_frequency = POLL_FREQ_AM2320;
+	T_RH_poll_frequency = T_RH_POLL_FREQ;
 
     while(1)
     {
-        if(delay_msec() > am2320_poll_frequency)
+        if(delay_msec() > T_RH_poll_frequency)
         {
 
 #if TEMPERATURE_AM2320
 
-            am2320_temparutre_humidity_measureent();
+            am2320_temparutre_humidity_measurement();
 
             calculate_rtc_time(rtc_buffer);
             strcpy(displaystring,rtc_buffer);
@@ -72,17 +71,20 @@ void main(void)
             strncat(displaystring,"\r\n",strlen("\r\n"));
 
             /* Display on the LCD module */
-            strcpy(lcd_string,"Temp(*c):");
+            strcpy(lcd_string,"Temp(c):");
             strncat(lcd_string,temperaturebuff,strlen(temperaturebuff));
             set_address(0, 2);
             write_string_to_lcd(lcd_string);
 
             strcpy(lcd_string,"Hum(RH):");
             strncat(lcd_string,humiditybuffer,strlen(humiditybuffer));
+            strncat(lcd_string,"%",strlen("%"));
             set_address(0, 3);
             write_string_to_lcd(lcd_string);
             set_address(0, 4);
 //            //write_string_to_lcd("Battery level:");
+
+
 
             cbfifo_enqueue(&cbfifo_tx,displaystring,strlen(displaystring));
 
@@ -123,6 +125,7 @@ void init_routine()
 
 }
 
+#if 0
 void am2320_temparutre_humidity_measurement()
 {
     signed int am2320_T = 0x0000;
@@ -146,7 +149,7 @@ void am2320_temparutre_humidity_measurement()
     while(delay_msec() < 2);
 
     am2320_i2c_init();
-    am2320_i2c_read_data(I2C_DATA_READ_BYTES);
+    am2320_i2c_read_data(AM2320_I2C_DATA_READ_BYTES);
 
     am2320_get_RH_and_temperature(&am2320_RH, &am2320_T);
     am2320_get_CRC(&am2320_CRC_temp);
@@ -173,5 +176,6 @@ void am2320_temparutre_humidity_measurement()
     reset_timer();
     while(delay_msec() < 10);
 }
+#endif
 
 /* EOF */
