@@ -15,4 +15,7 @@
 
 void gpio_init();
 
+
+#define TURN_FAN_ON                              P2->OUT |= BIT2
+#define TURN_FAN_OFF                             P2->OUT &= ~BIT2
 #endif /* GPIO_H_ */

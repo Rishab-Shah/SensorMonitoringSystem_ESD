@@ -8,7 +8,8 @@
 
 #define T_RH_POLL_FREQ                           (2000)
 #define TEMPERATURE_AM2320                       (0)
-#define HEART_BEAT
+#define HEART_BEAT                               P1->OUT ^= BIT0
+#define TEMP_THRESHOLD                           24
 
 int32_t T_RH_poll_frequency;
 
@@ -17,9 +18,11 @@ volatile float am2320_humidity;
 volatile float si7021_temp_in_degC;
 volatile float si7021_humidity;
 
-extern uint8_t am2320_databuffer[8];
-void am2320_temparutre_humidity_measurement();
-void init_routine();
+static void init_routine();
+static void sensor_processing();
+static void control_action();
+static void display_dewpoint_level(float temperature, float relative_humidity);
+static void display_frequency();
 
 void main(void)
 {
@@ -27,68 +30,17 @@ void main(void)
 
 	init_routine();
 
-	char displaystring[200];
-	char rtc_buffer[25];
-	char temperaturebuff[10];
-	char humiditybuffer[10];
-	char lcd_string[50];
-
 	T_RH_poll_frequency = T_RH_POLL_FREQ;
 
     while(1)
     {
         if(delay_msec() > T_RH_poll_frequency)
         {
+            sensor_processing();
 
-#if TEMPERATURE_AM2320
+            control_action();
 
-            am2320_temparutre_humidity_measurement();
-
-            calculate_rtc_time(rtc_buffer);
-            strcpy(displaystring,rtc_buffer);
-
-            sprintf(temperaturebuff,"%2.2f",am2320_temp_in_degC);
-            strncat(displaystring,temperaturebuff,strlen(temperaturebuff));
-
-            strncat(displaystring,",",1);
-
-            sprintf(humiditybuffer,"%2.2f",am2320_humidity);
-            strncat(displaystring,humiditybuffer,strlen(humiditybuffer));
-
-#else
-            si7021_temperature_humidity_measurement();
-            calculate_rtc_time(rtc_buffer);
-            strcpy(displaystring,rtc_buffer);
-
-            sprintf(temperaturebuff,"%2.2f",si7021_temp_in_degC);
-            strncat(displaystring,temperaturebuff,strlen(temperaturebuff));
-
-            strncat(displaystring,",",1);
-
-            sprintf(humiditybuffer,"%2.2f",si7021_humidity);
-            strncat(displaystring,humiditybuffer,strlen(humiditybuffer));
-#endif
-            strncat(displaystring,"\r\n",strlen("\r\n"));
-
-            /* Display on the LCD module */
-            strcpy(lcd_string,"Temp(c):");
-            strncat(lcd_string,temperaturebuff,strlen(temperaturebuff));
-            set_address(0, 2);
-            write_string_to_lcd(lcd_string);
-
-            strcpy(lcd_string,"Hum(RH):");
-            strncat(lcd_string,humiditybuffer,strlen(humiditybuffer));
-            strncat(lcd_string,"%",strlen("%"));
-            set_address(0, 3);
-            write_string_to_lcd(lcd_string);
-            set_address(0, 4);
-//            //write_string_to_lcd("Battery level:");
-
-
-
-            cbfifo_enqueue(&cbfifo_tx,displaystring,strlen(displaystring));
-
-            P1->OUT ^= BIT0;
+            HEART_BEAT;
             reset_timer();
         }
 
@@ -100,7 +52,7 @@ void main(void)
 }
 
 
-void init_routine()
+static void init_routine()
 {
     clock_init();
 
@@ -125,57 +77,110 @@ void init_routine()
 
 }
 
-#if 0
-void am2320_temparutre_humidity_measurement()
+static void sensor_processing()
 {
-    signed int am2320_T = 0x0000;
-    unsigned int am2320_RH = 0x0000;
-    unsigned int am2320_CRC_data = 0x0000;
-    unsigned int am2320_CRC_temp = 0x0000;
+    char displaystring[200];
+    char rtc_buffer[25];
+    char temperaturebuff[10];
+    char humiditybuffer[10];
+    char lcd_string[50];
 
-    am2320_i2c_write_operation_wakeup(AM2320_BITBANG_ADDRESS);
+#if TEMPERATURE_AM2320
 
-    reset_timer();
-    while(delay_msec() < 5);
+    am2320_temparutre_humidity_measurement();
 
-    am2320_i2c_init();
+    am2320_display_builder();
 
-    reset_timer();
-    while(delay_msec() < 5);
+    calculate_rtc_time(rtc_buffer);
+    strcpy(displaystring,rtc_buffer);
 
-    am2320_i2c_write_data(AM2320_FUNCTION_CODE,AM2320_START_ADDRESS,AM2320_REGISTER_LENGTH,3);
+    sprintf(temperaturebuff,"%2.2f",am2320_temp_in_degC);
+    strncat(displaystring,temperaturebuff,strlen(temperaturebuff));
 
-    reset_timer();
-    while(delay_msec() < 2);
+    strncat(displaystring,",",1);
 
-    am2320_i2c_init();
-    am2320_i2c_read_data(AM2320_I2C_DATA_READ_BYTES);
+    sprintf(humiditybuffer,"%2.2f",am2320_humidity);
+    strncat(displaystring,humiditybuffer,strlen(humiditybuffer));
 
-    am2320_get_RH_and_temperature(&am2320_RH, &am2320_T);
-    am2320_get_CRC(&am2320_CRC_temp);
-    am2320_CRC_data = am2320_CRC16(am2320_databuffer, 6);
+#else
 
-    if(am2320_CRC_temp == am2320_CRC_data)
+    si7021_temperature_humidity_measurement();
+    calculate_rtc_time(rtc_buffer);
+    strcpy(displaystring,rtc_buffer);
+
+    sprintf(temperaturebuff,"%2.2f",si7021_temp_in_degC);
+    strncat(displaystring,temperaturebuff,strlen(temperaturebuff));
+
+    strncat(displaystring,",",1);
+
+    sprintf(humiditybuffer,"%2.2f",si7021_humidity);
+    strncat(displaystring,humiditybuffer,strlen(humiditybuffer));
+
+#endif
+
+    strncat(displaystring,"\r\n",strlen("\r\n"));
+
+    /* Display on the LCD module */
+    strcpy(lcd_string,"Temp(c):");
+    strncat(lcd_string,temperaturebuff,strlen(temperaturebuff));
+    set_address(0, 2);
+    write_string_to_lcd(lcd_string);
+
+    strcpy(lcd_string,"Hum(RH):");
+    strncat(lcd_string,humiditybuffer,strlen(humiditybuffer));
+    strncat(lcd_string,"%",strlen("%"));
+    set_address(0, 3);
+    write_string_to_lcd(lcd_string);
+
+    display_dewpoint_level(si7021_temp_in_degC,si7021_humidity);
+
+    display_frequency();
+
+    cbfifo_enqueue(&cbfifo_tx,displaystring,strlen(displaystring));
+}
+
+
+static void display_dewpoint_level(float temperature_c, float relative_humidity)
+{
+    set_address(0, 4);
+
+    char dew_point_buffer[25];
+    char lcd_string[50];
+
+    float dew_pt = temperature_c - ((100 - relative_humidity)/5);
+
+    sprintf(dew_point_buffer,"%2.2f",dew_pt);
+    strcpy(lcd_string,"Dew Pt:");
+    strncat(lcd_string,dew_point_buffer,strlen(dew_point_buffer));
+
+    write_string_to_lcd(lcd_string);
+}
+
+
+static void display_frequency()
+{
+    char lcd_string[50];
+    char pollbuffer[20];
+
+    set_address(0, 5);
+
+    sprintf(pollbuffer,"%d",(T_RH_poll_frequency/1000));
+    strcpy(lcd_string,"Freq:");
+    strncat(lcd_string,pollbuffer,strlen(pollbuffer));
+    strncat(lcd_string," sec",strlen(" sec"));
+
+    write_string_to_lcd(lcd_string);
+}
+
+static void control_action()
+{
+    if(si7021_temp_in_degC > TEMP_THRESHOLD)
     {
-        am2320_temp_in_degC = (((am2320_databuffer[4] & 0x7F) << 8) + am2320_databuffer[5]) / 10.0;
-        am2320_temp_in_degC = (am2320_databuffer[4] & 0x80) ? -am2320_temp_in_degC : am2320_temp_in_degC;
-        am2320_humidity = ((am2320_databuffer[2] << 8) + am2320_databuffer[3]) / 10.0;
-
-        printf("RH::%x\n",am2320_RH/10);
-        printf("T::%x\n",am2320_T/10);
-        printf("New data\n");
-        printf("RH::%f\n",am2320_temp_in_degC);
-        printf("T::%f\n",am2320_humidity);
-
+        TURN_FAN_ON;
     }
     else
     {
-        printf("error\n");
+        TURN_FAN_OFF;
     }
-
-    reset_timer();
-    while(delay_msec() < 10);
 }
-#endif
-
 /* EOF */
