@@ -6,10 +6,10 @@
  */
 #include "main.h"
 
-#define T_RH_POLL_FREQ                           (2000)
+#define T_RH_POLL_FREQ                           (1000)
 #define TEMPERATURE_AM2320                       (0)
 #define HEART_BEAT                               P1->OUT ^= BIT0
-#define TEMP_THRESHOLD                           24
+#define TEMP_THRESHOLD                           23
 
 int32_t T_RH_poll_frequency;
 
@@ -22,7 +22,6 @@ static void init_routine();
 static void sensor_processing();
 static void control_action();
 static void display_dewpoint_level(float temperature, float relative_humidity);
-static void display_frequency();
 
 void main(void)
 {
@@ -134,8 +133,6 @@ static void sensor_processing()
 
     display_dewpoint_level(si7021_temp_in_degC,si7021_humidity);
 
-    display_frequency();
-
     cbfifo_enqueue(&cbfifo_tx,displaystring,strlen(displaystring));
 }
 
@@ -150,27 +147,12 @@ static void display_dewpoint_level(float temperature_c, float relative_humidity)
     float dew_pt = temperature_c - ((100 - relative_humidity)/5);
 
     sprintf(dew_point_buffer,"%2.2f",dew_pt);
-    strcpy(lcd_string,"Dew Pt:");
+    strcpy(lcd_string,"Dew Pt :");
     strncat(lcd_string,dew_point_buffer,strlen(dew_point_buffer));
 
     write_string_to_lcd(lcd_string);
 }
 
-
-static void display_frequency()
-{
-    char lcd_string[50];
-    char pollbuffer[20];
-
-    set_address(0, 5);
-
-    sprintf(pollbuffer,"%d",(T_RH_poll_frequency/1000));
-    strcpy(lcd_string,"Freq:");
-    strncat(lcd_string,pollbuffer,strlen(pollbuffer));
-    strncat(lcd_string," sec",strlen(" sec"));
-
-    write_string_to_lcd(lcd_string);
-}
 
 static void control_action()
 {
