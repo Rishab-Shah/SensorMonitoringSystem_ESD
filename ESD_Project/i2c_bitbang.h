@@ -1,50 +1,38 @@
-/* -----------------------------------------------------------------------------
- * Rishab Shah
- * ECEN 5613 - Spring 2021 - Prof. McClure
- * University of Colorado Boulder
- * Revised 19/03/2021
- * references:https://aticleworld.com/interfacing-eeprom-using-i2c/
- * https://8051projects.net/wiki/I2C_Implementation_on_8051#Implementing_I2C_in_C
- The function names and implementation sequence is slightly modified after
- analysing the same from the datasheet.
-
- The main base logic required to develop the code was taken from her for I2C.
- *  ----------------------------------------------------------------------------
- * This files handles all the functions declaration related to I2c.
-   ---------------------------------------------------------------------------*/
-/* ---------------------------------------------------------------------------*/
-//          INCLUDES & DEFINES
-/* ---------------------------------------------------------------------------*/
+/******************************************************************************
+* @file: i2c_bitbang.h
+*
+* @brief: This files consists of the function definitions used in the i2c_bitbang.c file
+* This file was incorporated to include the bit banging technique for
+* AM2320 sensor for the wakeup sequence correction
+* @date:  25-Apr-2021
+*******************************************************************************/
 #ifndef I2CFILES_H
 #define I2CFILES_H
-
+/*******************************************************************************
+Header files
+*******************************************************************************/
 #include <am2320_i2c.h>
 #include <stdint.h>
 #include <stdio.h>
 #include "msp.h"
-
-
-
-
-#define WRITE           0
-#define READ            1
-
-#define I2C_DELAY       2
-
+/*******************************************************************************
+Macros
+*******************************************************************************/
+#define WRITE                   (0)
+#define READ                    (1)
+#define I2C_DELAY               (2)
+/*******************************************************************************
+Function Prototype
+*******************************************************************************/
 void send_nack(void);
 void SendACK();
 void restart_bit();
 unsigned char i2c_read_operation();
-uint8_t am2320_i2c_write_operation_wakeup(uint8_t Txdata);
 void mydelay(uint8_t data);
 void bus_no_busy_state();
 void stop_bit();
 void start_bit();
 void poll_ack();
-
-
-
-void init_i2c_bitbang();
-uint8_t am2320_i2c_write_operation_wakeup(uint8_t Txdata);
+void am2320_i2c_write_operation_wakeup(uint8_t Txdata);
 
 #endif

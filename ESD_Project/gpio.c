@@ -1,27 +1,24 @@
 /******************************************************************************
-* @file:switch.c
+* @file: gpio.c
 *
-* @brief: This files consists of the function headers used in the switch.c file
-*
+* @brief: This files consists of the function definitions used in the gpio.c file
+* This contains the logic to initialise the heart beat led and fan configuration through PWM led
 * @author: Rishab Shah
-* @date:  12-Mar-2021
+* @date:  22-Apr-2021
+* @reference: William Goh - msp432p401x_euscia0_uart_01
 *******************************************************************************/
 /*******************************************************************************
 Header files
 *******************************************************************************/
 #include "gpio.h"
 /*******************************************************************************
-Global variables
-*******************************************************************************/
-
-/*******************************************************************************
 Function definition
 *******************************************************************************/
 static void heart_beat();
 static void fan_config();
 /*******************************************************************************
-* @Function switch_init
-* @Description: init switch for input pullup (P1.1 and P1.4)
+* @Function gpio_init
+* @Description: init all the gpio related modules
 * @input param : None
 * @return: None
 *******************************************************************************/
@@ -32,17 +29,26 @@ void gpio_init()
     fan_config();
 }
 
+/*******************************************************************************
+* @Function heart_beat
+* @Description: init  the heart beat led P1.0
+* @input param : None
+* @return: None
+*******************************************************************************/
 static void heart_beat()
 {
     //Configure GPIO
     P1->DIR |= BIT0;
     P1->OUT &= ~BIT0;
 
-    P4->DIR |= BIT0;
-    P4->OUT &= ~BIT0;
-
 }
 
+/*******************************************************************************
+* @Function fan_config
+* @Description: init  the fan (BLUE LED) P2.2
+* @input param : None
+* @return: None
+*******************************************************************************/
 static void fan_config()
 {
     //Configure GPIO

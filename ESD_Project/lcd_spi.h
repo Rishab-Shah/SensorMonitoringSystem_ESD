@@ -1,19 +1,24 @@
-/*
- * spi.h
- *
- *  Created on: 20-Apr-2021
- *      Author: HP
- */
-
+/******************************************************************************
+* @file: lcd_spi.h
+*
+* @brief: This files consists of the function headers used in the lcd_spi.h file
+* This file is is used for communication with the LCD module
+* @date:  20-Apr-2021
+* @reference: William Goh - msp432p401x_euscib0_spi_09
+*******************************************************************************/
 #ifndef LCD_SPI_H_
 #define LCD_SPI_H_
-
+/*******************************************************************************
+Header files
+*******************************************************************************/
 #include "pcd8544.h"
 #include "msp.h"
 #include <stdint.h>
 #include <stdio.h>
 #include "systimer.h"
-
+/*******************************************************************************
+Function prototype
+*******************************************************************************/
 void spi_init();
 void spi_config();
 void clear_lcd();

@@ -1,10 +1,13 @@
 /******************************************************************************
-* @file:switch.h
+* @file: switch.h
 *
-* @brief: This files consists of the function headers used in the switch.c file
-*
+* @brief: This files consists of the function prototypes for the function
+* definition  in switch.c file
+* This file is used to provide control the polling rate at which the data from
+* the sensor will be read.
 * @author: Rishab Shah
-* @date:  12-Mar-2021
+* @date:  13-Apr-2021
+* @reference: William Goh - msp432p401x_p1_03
 *******************************************************************************/
 #ifndef SWITCH_H_
 #define SWITCH_H_
@@ -14,11 +17,13 @@ Header files
 #include "stdio.h"
 #include "msp.h"
 /*******************************************************************************
+Macros
+*******************************************************************************/
+#define T_RH_BASE_POLL_FREQ                           (1000)
+/*******************************************************************************
 Function declarations
 *******************************************************************************/
-void led_port_init();
 void switch_init();
-
 void PORT1_IRQHandler(void);
 
 

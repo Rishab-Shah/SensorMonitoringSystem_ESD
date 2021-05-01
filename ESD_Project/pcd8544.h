@@ -1,10 +1,14 @@
-/*
- * PCD8544.h
- *
- *  Created on: 22-Apr-2021
- *      Author: HP
- */
-
+/******************************************************************************
+* @file: pcd8544.h
+*
+* @brief: This files consists of various macros that would be required to configure
+* LCD module
+* @author: Rishab Shah, RobG
+* This file was picked up because he had already developed a large number of macros
+* to use. This was done to save time on rework.
+* @date:  23-Apr-2021
+* @reference: https://forum.43oh.com/topic/1312-nokia-5110-display/
+*******************************************************************************/
 #ifndef PCD8544_H_
 #define PCD8544_H_
 
@@ -41,7 +45,7 @@
 #define ROTATE_180                                  (FLIP_H | FLIP_V)
 
 static const char font[][5] = {
-                                // basic font
+     // basic font
      {0x00, 0x00, 0x00, 0x00, 0x00} // 20
     ,{0x00, 0x00, 0x5f, 0x00, 0x00} // 21 !
     ,{0x00, 0x07, 0x00, 0x07, 0x00} // 22 "
@@ -139,8 +143,5 @@ static const char font[][5] = {
     ,{0x10, 0x08, 0x08, 0x10, 0x08} // 7e ~
     ,{0x00, 0x06, 0x09, 0x09, 0x06} // 7f Deg Symbol
 };
-
-
-
 
 #endif /* PCD8544_H_ */

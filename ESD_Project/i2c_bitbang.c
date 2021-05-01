@@ -1,28 +1,35 @@
-/* -----------------------------------------------------------------------------
- * Rishab Shah
- * ECEN 5613 - Spring 2021 - Prof. McClure
- * University of Colorado Boulder
- * Revised 19/03/2021
- * references:https://aticleworld.com/interfacing-eeprom-using-i2c/
- * https://8051projects.net/wiki/I2C_Implementation_on_8051#Implementing_I2C_in_C
- The function names and implementation sequence is slightly modified after
- analysing the same from the datasheet.
-
- The main base logic required to develop the code was taken from her for I2C.
- *  ----------------------------------------------------------------------------
- * This files handles all the operations related to I2c.
-   ---------------------------------------------------------------------------*/
+/******************************************************************************
+* @file: i2c_bitbang.c
+*
+* @brief: This file was incorporated to include the bit banging technique for
+* AM2320 sensor for the wakeup sequence correction
+* @date:  25-Apr-2021
+*******************************************************************************/
+/*******************************************************************************
+Header files
+*******************************************************************************/
 #include "i2c_bitbang.h"
-/* The function puts a start condition on the bus*/
-
+/*******************************************************************************
+Macros
+*******************************************************************************/
 #define SET_SDA_HIGH                            P1->OUT |= SDA
 #define SET_SDA_LOW                             P1->OUT &= ~SDA
 #define SET_SCL_HIGH                            P1->OUT |= SCL
 #define SET_SCL_LOW                             P1->OUT &= ~SCL
-
-void set_sda(uint8_t value);
-void init_i2c_bitbang();
-
+/*******************************************************************************
+Function Prototype
+*******************************************************************************/
+static void set_sda(uint8_t value);
+static void init_i2c_bitbang();
+/*******************************************************************************
+Function Definition
+*******************************************************************************/
+/*******************************************************************************
+* @Function start_bit
+* @Description: This function generates the start bit
+* @input param : None
+* @return: None
+*******************************************************************************/
 void start_bit()
 {
     SET_SDA_HIGH;
@@ -39,7 +46,12 @@ void start_bit()
     mydelay(I2C_DELAY);
 }
 
-/* The function puts a stop condition on the bus*/
+/*******************************************************************************
+* @Function stop_bit
+* @Description: The function puts a stop condition on the bus
+* @input param : None
+* @return: None
+*******************************************************************************/
 void stop_bit()
 {
    SET_SCL_LOW;
@@ -57,7 +69,12 @@ void stop_bit()
 
 }
 
-/* The function puts the bus in no busy state*/
+/*******************************************************************************
+* @Function bus_no_busy_state
+* @Description: The function puts the bus in no busy state
+* @input param : None
+* @return: None
+*******************************************************************************/
 void bus_no_busy_state()
 {
    SET_SDA_HIGH;
@@ -65,8 +82,13 @@ void bus_no_busy_state()
    SET_SCL_HIGH;
 }
 
-/* The function provides a software delay for triggering the timing.
-chosen empircally as I2C_DELAY = 1 */
+/*******************************************************************************
+* @Function mydelay
+* @Description: The function provides a software delay for triggering the timing.
+* chosen empirically as I2C_DELAY = 2
+* @input param : None
+* @return: None
+*******************************************************************************/
 void mydelay(uint8_t data)
 {
     while(data)
@@ -75,8 +97,13 @@ void mydelay(uint8_t data)
     }
 }
 
-/* This performs a write operation on the bus for the 8 bits passed */
-uint8_t am2320_i2c_write_operation_wakeup(uint8_t Txdata)
+/*******************************************************************************
+* @Function am2320_i2c_write_operation_wakeup
+* @Description: This performs a write operation on the bus for the 8 bits passed
+* @input param 1: teh data to be sent over the frame
+* @return: none
+*******************************************************************************/
+void am2320_i2c_write_operation_wakeup(uint8_t Txdata)
 {
     init_i2c_bitbang();
 
@@ -103,6 +130,7 @@ uint8_t am2320_i2c_write_operation_wakeup(uint8_t Txdata)
         mydelay(I2C_DELAY);
     }
 
+    /* generate NACK and pull SDA low */
     SET_SDA_HIGH;
     mydelay(I2C_DELAY);
 
@@ -120,12 +148,15 @@ uint8_t am2320_i2c_write_operation_wakeup(uint8_t Txdata)
     while(delay_msec() < 2);
 
     stop_bit();
-
-    return 0;
 }
 
-/* This performs a read operation on the bus for the 8 bits passed by the slave
-on bus */
+/*******************************************************************************
+* @Function i2c_read_operation
+* @Description: This performs a read operation on the bus for the 8 bits passed by the slave
+* on bus
+* @input param : none
+* @return: the byte received on the frame
+*******************************************************************************/
 #if 0
 unsigned char i2c_read_operation()
 {
@@ -153,7 +184,12 @@ unsigned char i2c_read_operation()
 }
 #endif
 
-/* This is used to send an ack during sequential read */
+/*******************************************************************************
+* @Function SendACK
+* @Description: This is used to send an ack during sequential read
+* @input param : none
+* @return: none
+*******************************************************************************/
 void SendACK()
 {
     SET_SDA_LOW;
@@ -169,7 +205,12 @@ void SendACK()
     mydelay(I2C_DELAY);
 }
 
-/* This is used to prepare a restart sequence */
+/*******************************************************************************
+* @Function restart_bit
+* @Description: This is used to prepare a restart sequence
+* @input param : none
+* @return: none
+*******************************************************************************/
 void restart_bit()
 {
     SET_SDA_HIGH;
@@ -185,7 +226,12 @@ void restart_bit()
     mydelay(I2C_DELAY);
 }
 
-/* This is used to send a NACK during the end of read sequence*/
+/*******************************************************************************
+* @Function send_nack
+* @Description: This is used to send a NACK during the end of read sequence
+* @input param : none
+* @return: none
+*******************************************************************************/
 void send_nack(void)
 {
     SET_SDA_HIGH;
@@ -195,7 +241,12 @@ void send_nack(void)
     mydelay(I2C_DELAY);
 }
 
-/* This is used to poll for the ack from the slave during write opearation */
+/*******************************************************************************
+* @Function poll_ack
+* @Description: This is used to poll for the ack from the slave during write operation
+* @input param : none
+* @return: none
+*******************************************************************************/
 void poll_ack()
 {
     SET_SCL_HIGH;
@@ -210,7 +261,12 @@ void poll_ack()
     mydelay(I2C_DELAY);
 }
 
-
+/*******************************************************************************
+* @Function set_sda
+* @Description: This is used to send the 1 or 0 data on the frame bit by bit
+* @input param 1: the value received
+* @return: none
+*******************************************************************************/
 void set_sda(uint8_t value)
 {
     if(value != 0)
@@ -222,31 +278,30 @@ void set_sda(uint8_t value)
         P1->OUT &= ~SDA;
     }
 }
-/*
-void set_scl(uint8_t value)
-{
-    if(value != 0)
-    {
-        P1->OUT |= SCL;
-    }
-    else
-    {
-        P1->OUT &= ~SCL;
-    }
-}
-*/
+
+/*******************************************************************************
+* @Function init_i2c_bitbang
+* @Description: Initialize the GPIO pins for the I2C bit bang arrangement
+* @input param : none
+* @return: none
+*******************************************************************************/
 void init_i2c_bitbang()
 {
-    //Configure GPIO
+    /* Configure GPIO pins for
+     * bitbang arrangement */
     P1->DIR |= SDA;
     P1->DIR |= SCL;
 
+    /* Using P1.6 and P1.7
+     * for the same */
     SEL_0 &= ~SDA;
     SEL_1 &= ~SDA;
 
     SEL_0 &= ~SCL;
     SEL_1 &= ~SCL;
 
+    /* By default put them in I2C
+     * No busy state */
     P1->OUT |= SDA;
     P1->OUT |= SCL;
 }

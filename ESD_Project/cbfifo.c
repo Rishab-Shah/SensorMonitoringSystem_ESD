@@ -4,10 +4,8 @@
 * @brief: This files consists of the main logic used to implement cbfifo.
 *
 * @author: Rishab Shah
-* @date:  14-Feb-2021
+* @date:  14-Apr-2021
 * @references: Making Embedded Systems - White
-* @version 1.1 : Updated as per recommendation from Prof. Howdy for optimization
-* @version 1.2 : Added third parameter -- 01/04/2021
 *******************************************************************************/
 /*******************************************************************************
 Header files

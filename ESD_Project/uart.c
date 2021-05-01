@@ -1,11 +1,13 @@
 /******************************************************************************
-* @file:uart.h
+* @file: uart.c
 *
 * @brief: This files consists of the init and isr related parameters for uart
-* commmunication
-*
+* communication.
+* This file is required to send data over UART to the PC terminal
+* @ Used to implement serial communication over UART
 * @author: Rishab Shah
-* @date:  12-Mar-2021
+* @date:  20-Apr-2021
+* @reference: William Goh - msp432p401x_euscia0_uart_01
 *******************************************************************************/
 /*******************************************************************************
 Header files
@@ -14,41 +16,48 @@ Header files
 /*******************************************************************************
 Global variables
 *******************************************************************************/
-uint8_t in_storage;
 CB_t cbfifo_tx;
 CB_t cbfifo_rx;
 /*******************************************************************************
-Function prototype
+Macros
 *******************************************************************************/
+#define EUSCI_UART_IFG                                  EUSCI_A0->IFG
+#define UART_RXBUF                                      EUSCI_A0->RXBUF
+#define UART_TXBUF                                      EUSCI_A0->TXBUF
+#define UART_IE                                         EUSCI_A0->IE
+
+#define EUSCI_UART_CTLW0                                EUSCI_A0->CTLW0
+#define EUSCI_UART_BRW                                  EUSCI_A0->BRW
+#define EUSCI_UART_MCTLW                                EUSCI_A0->MCTLW
 /*******************************************************************************
 * @Function EUSCIA0_IRQHandler
 * @Description: UART interrupt service routine
-* @input param : None
-* @return: None
+* @input param : none
+* @return: none
 *******************************************************************************/
 void EUSCIA0_IRQHandler(void)
 {
     uint8_t temp_char;
 
-    if (EUSCI_A0->IFG & EUSCI_A_IFG_RXIFG)
+    if (EUSCI_UART_IFG & EUSCI_A_IFG_RXIFG)
     {
         /* Echo the received character back */
-        temp_char = EUSCI_A0->RXBUF;
+        temp_char = UART_RXBUF;
 
         cbfifo_enqueue(&cbfifo_rx,&temp_char,1);
     }
 
-    if(EUSCI_A0->IFG & EUSCI_A_IFG_TXIFG)
+    if(EUSCI_UART_IFG & EUSCI_A_IFG_TXIFG)
     {
         if(cbfifo_dequeue(&cbfifo_tx,&temp_char,1))
         {
             /* transmit the byte */
-            EUSCI_A0->TXBUF = temp_char;
+            UART_TXBUF = temp_char;
         }
         else
         {
             /* queue is empty so disable transmitter interrupt */
-            EUSCI_A0->IE &= ~EUSCI_A_IE_TXIE;
+            UART_IE &= ~EUSCI_A_IE_TXIE;
         }
 
     }
@@ -59,6 +68,7 @@ void EUSCIA0_IRQHandler(void)
 * @Description: Init of clock for uart baud rate setting
 * @input param : None
 * @return: None
+* @reference: TI resource explorer for baudrate settings
 *******************************************************************************/
 void clock_init()
 {
@@ -75,96 +85,51 @@ void clock_init()
 
 /*******************************************************************************
 * @Function config_uart
-* @Description: configure uart fro baudrate and interrupt
+* @Description: configure uart for baudrate and interrupt mode along with circular
+* buffer
 * @input param : None
 * @return: None
+* @reference: TI resource explorer for baudrate settings
 *******************************************************************************/
 void config_uart()
 {
-    // Configure UART pins
-    P1->SEL0 |= BIT2 | BIT3;                            // set 2-UART pin as secondary function
+    /* Configure UART pins
+     * set 2-UART pin as secondary function*/
+    P1->SEL0 |= BIT2 | BIT3;
 
-    // Configure UART
-    EUSCI_A0->CTLW0 |= EUSCI_A_CTLW0_SWRST;             // Put eUSCI in reset
+    /* Configure UART */
+    EUSCI_UART_CTLW0 |= EUSCI_A_CTLW0_SWRST;
 
-    EUSCI_A0->CTLW0 = EUSCI_A_CTLW0_SWRST |             // Remain eUSCI in reset
-           EUSCI_B_CTLW0_SSEL__SMCLK;                   // Configure eUSCI clock source for SMCLK
+    /* Remain eUSCI in reset
+     * Configure eUSCI clock source for SMCLK */
+    EUSCI_UART_CTLW0 = EUSCI_A_CTLW0_SWRST |
+           EUSCI_B_CTLW0_SSEL__SMCLK;
 
-    // Baud Rate calculation
-    // 12000000/(16*9600) = 78.125
-    // Fractional portion = 0.125
-    // User's Guide Table 21-4: UCBRSx = 0x10
-    // UCBRFx = int ( (78.125-78)*16) = 2
-    EUSCI_A0->BRW = 78;                                 // 12000000/16/9600
-    EUSCI_A0->MCTLW = (2 << EUSCI_A_MCTLW_BRF_OFS) |
+    /* Baud Rate calculation
+     12000000/(16*9600) = 78.125
+     Fractional portion = 0.125
+     User's Guide Table 21-4: UCBRSx = 0x10
+     UCBRFx = int ( (78.125-78)*16) = 2
+     12000000/16/9600 */
+    EUSCI_UART_BRW = 78;
+    EUSCI_UART_MCTLW = (2 << EUSCI_A_MCTLW_BRF_OFS) |
            EUSCI_A_MCTLW_OS16;
 
+    /* Initialize eUSCI */
+    EUSCI_UART_CTLW0 &= ~EUSCI_A_CTLW0_SWRST;
 
+    /* Clear eUSCI RX interrupt flag */
+    EUSCI_UART_IFG  &= ~EUSCI_A_IFG_RXIFG;
 
-    EUSCI_A0->CTLW0 &= ~EUSCI_A_CTLW0_SWRST;            // Initialize eUSCI
+    /* Enable USCI_A0 RX & Tx interrupt */
+    UART_IE |= EUSCI_A_IE_RXIE;
 
-    EUSCI_A0->IFG &= ~EUSCI_A_IFG_RXIFG;                // Clear eUSCI RX interrupt flag
-
-    EUSCI_A0->IE |= EUSCI_A_IE_RXIE /*|EUSCI_A_IFG_TXIFG*/;    // Enable USCI_A0 RX & Tx interrupt
-
+    /* Initialize both the separate tx and rx queues */
     cbfifo_init(&cbfifo_tx,CBFIFO_SIZE);
     cbfifo_init(&cbfifo_rx,CBFIFO_SIZE);
 
-    // Enable eUSCIA0 interrupt in NVIC module
+    /* Enable eUSCIA0 interrupt in NVIC module */
     NVIC->ISER[0] = 1 << ((EUSCIA0_IRQn) & 31);
 }
 
-#if 0
-/*******************************************************************************
-* @Function Name: __sys_write
-* @Description: enqueues the tx buffer to display data on the terminal
-* @onput param: None
-* @return: None
-*******************************************************************************/
-int __sys_write(int handle, char *buf, int size)
-{
-    if(buf == NULL)
-    {
-        return -1;
-    }
-
-    /* Check for the queue to be empty */
-    while(cbfifo_full(&cbfifo_tx))
-    {
-        ;
-    }
-
-    cbfifo_enqueue(&cbfifo_tx,buf,size);
-
-    /* enable the transmit interrupt */
-    EUSCI_A0->IE |=  EUSCI_A_IFG_TXIFG;
-    /*if(!(UART0->C2 & UART0_C2_TIE_MASK))
-    {
-        UART0->C2 |= UART0_C2_TIE(1);
-    }*/
-
-    return 0;
-}
-
-/*******************************************************************************
-* @Function Name: __sys_readc
-* @Description: dequeues the rx buffer to fetch data from the terminal
-* @onput param: None
-* @return: None
-*******************************************************************************/
-int __sys_readc(void)
-{
-    char data_byte;
-
-    /* dequeue one byte at a time */
-    if(cbfifo_dequeue(&cbfifo_rx,&data_byte,1) != 1)
-    {
-        return -1;
-    }
-    else
-    {
-        return data_byte;
-    }
-}
-#endif
 /* EOF */

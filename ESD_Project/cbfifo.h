@@ -1,10 +1,11 @@
 /******************************************************************************
-* @file:cbfifo.h
+* @file: cbfifo.h
 *
-* @brief: This files consists of the function headers used in the cbfifo file
+* @brief: This files consists of the function prototypes and structure
+* used in the cbfifo file
 *
 * @author: Rishab Shah
-* @date:  12-Mar-2021
+* @date:  12-Apr-2021
 * @references: Making Embedded Systems - White
 *******************************************************************************/
 #ifndef _CBFIFO_H_
@@ -32,7 +33,6 @@ typedef struct sCircularBuffer
     int16_t tracker;                  /* To track the position */
 }CB_t;
 
-///typedef struct sCircularBuffer CB_t;
 /*******************************************************************************
 Function declarations
 *******************************************************************************/
@@ -132,13 +132,11 @@ int cbfifo_full(CB_t *cbfifo);
 
 
 /*
- * INitialises the queue
+ * Initialises the queue
  *
  * Parameters:
  *   cbfifo   Queue under consideration
  *   size to init with (queue suze)
- * Returns:
- *   yes/no
  */
 void cbfifo_init(CB_t *cbfifo , size_t size);
 

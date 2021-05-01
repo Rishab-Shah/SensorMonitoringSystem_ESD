@@ -1,8 +1,8 @@
 # FIXED
 
 lcd_spi.obj: ../lcd_spi.c
-lcd_spi.obj: C:/Users/HP/workspace_v10/ESD_Project/lcd_spi.h
-lcd_spi.obj: C:/Users/HP/workspace_v10/ESD_Project/pcd8544.h
+lcd_spi.obj: ../lcd_spi.h
+lcd_spi.obj: ../pcd8544.h
 lcd_spi.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/msp.h
 lcd_spi.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/msp432p401r.h
 lcd_spi.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdint.h
@@ -23,11 +23,11 @@ lcd_spi.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_ccs.h
 lcd_spi.obj: C:/ti/ccs1020/ccs/ccs_base/arm/include/system_msp432p401r.h
 lcd_spi.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdio.h
 lcd_spi.obj: C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdarg.h
-lcd_spi.obj: C:/Users/HP/workspace_v10/ESD_Project/systimer.h
+lcd_spi.obj: ../systimer.h
 
 ../lcd_spi.c: 
-C:/Users/HP/workspace_v10/ESD_Project/lcd_spi.h: 
-C:/Users/HP/workspace_v10/ESD_Project/pcd8544.h: 
+../lcd_spi.h: 
+../pcd8544.h: 
 C:/ti/ccs1020/ccs/ccs_base/arm/include/msp.h: 
 C:/ti/ccs1020/ccs/ccs_base/arm/include/msp432p401r.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdint.h: 
@@ -48,4 +48,4 @@ C:/ti/ccs1020/ccs/ccs_base/arm/include/CMSIS/cmsis_ccs.h:
 C:/ti/ccs1020/ccs/ccs_base/arm/include/system_msp432p401r.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdio.h: 
 C:/ti/ccs1020/ccs/tools/compiler/ti-cgt-arm_20.2.4.LTS/include/stdarg.h: 
-C:/Users/HP/workspace_v10/ESD_Project/systimer.h: 
+../systimer.h: 
