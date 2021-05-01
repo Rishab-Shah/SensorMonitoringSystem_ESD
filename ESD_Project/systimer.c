@@ -7,6 +7,7 @@
 * activities
 * @author: Rishab Shah
 * @date:  12-Apr-2021
+* @reference : William Goh - msp432p401x_ta0_01
 *******************************************************************************/
 /*******************************************************************************
 Header files
@@ -15,10 +16,10 @@ Header files
 /*******************************************************************************
  Macros
 *******************************************************************************/
-#define TIMER_SELECTED                                   (0)
-#define TIMER_CTL                                        TIMER_A0->CTL
-#define TIMER_CCTL                                       TIMER_A0->CCTL[TIMER_SELECTED]
-#define TIMER_CCR                                        TIMER_A0->CCR[TIMER_SELECTED]
+#define TIMER_SELECTED                               (0)
+#define TIMER_CTL                                    TIMER_A0->CTL
+#define TIMER_CCTL                                   TIMER_A0->CCTL[TIMER_SELECTED]
+#define TIMER_CCR                                    TIMER_A0->CCR[TIMER_SELECTED]
 /*******************************************************************************
  Global variables
 *******************************************************************************/
@@ -29,8 +30,7 @@ volatile uint16_t g_counter2 = 0;
 * @Description: Initializes the timer to run at 1msec interrupt interval
 * @input param : none
 * @return: none
-* @reference: TI resource explorer. Modified the timing count values as per
-* the need. Only base frame of configuration was used to save development time.
+* @reference: TI resource explorer. Willian Goh
 *******************************************************************************/
 void init_timer()
 {

@@ -7,6 +7,7 @@
 * was for MSP430. The code was ported for the MSP432P401R
 * @date:  20-Apr-2021
 * @reference: William Goh - msp432p401x_euscib0_spi_09
+*  http://rohitg.in/2014/11/09/Nokia5510-lcd-with-MSP430/
 *******************************************************************************/
 /*******************************************************************************
 Header files

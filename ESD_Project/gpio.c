@@ -5,7 +5,6 @@
 * This contains the logic to initialise the heart beat led and fan configuration through PWM led
 * @author: Rishab Shah
 * @date:  22-Apr-2021
-* @reference: William Goh - msp432p401x_euscia0_uart_01
 *******************************************************************************/
 /*******************************************************************************
 Header files

@@ -15,32 +15,32 @@ Macros
 *******************************************************************************/
 // SCL -> P6.5  UCB1SCL
 // SDA -> P6.4  UCB1SDA
-#define SI7021_SDA                         BIT4
-#define SI7021_SCL                         BIT5
-#define SI7021_SEL_0                       P6->SEL0
-#define SI7021_SEL_1                       P6->SEL1
+#define SI7021_SDA                                  BIT4
+#define SI7021_SCL                                  BIT5
+#define SI7021_SEL_0                                P6->SEL0
+#define SI7021_SEL_1                                P6->SEL1
 
-#define SI7021_MEAS_RH_NOHOLD_CMD          0xF5 /* Measure RH. No Hold master mode */
-#define SI7021_MEAS_TEMP_NOHOLD_CMD        0xF3 /* Measure Temperature. No Hold master mode */
-#define I2C_SI7021_ADDRESS                 0x40 /* Address of the SI7021 */
+#define SI7021_MEAS_RH_NOHOLD_CMD                   0xF5 /* Measure RH. No Hold master mode */
+#define SI7021_MEAS_TEMP_NOHOLD_CMD                 0xF3 /* Measure Temperature. No Hold master mode */
+#define I2C_SI7021_ADDRESS                          0x40 /* Address of the SI7021 */
 
 /* Various macros used to provide flexibility in development */
-#define SI7021_EUSCI_I2C_I2CSA             EUSCI_B1->I2CSA
-#define SI7021_EUSCI_I2C_BRW               EUSCI_B1->BRW
+#define SI7021_EUSCI_I2C_I2CSA                      EUSCI_B1->I2CSA
+#define SI7021_EUSCI_I2C_BRW                        EUSCI_B1->BRW
 
-#define SI7021_EUSCI_I2C_CTLW0             EUSCI_B1->CTLW0
-#define SI7021_EUSCI_I2C_CTLW0_TR          EUSCI_B_CTLW0_TR
-#define SI7021_EUSCI_I2C_CTLW0_TXSTT       EUSCI_B_CTLW0_TXSTT
-#define SI7021_EUSCI_I2C_CTLW0_TXSTP       EUSCI_B_CTLW0_TXSTP
+#define SI7021_EUSCI_I2C_CTLW0                      EUSCI_B1->CTLW0
+#define SI7021_EUSCI_I2C_CTLW0_TR                   EUSCI_B_CTLW0_TR
+#define SI7021_EUSCI_I2C_CTLW0_TXSTT                EUSCI_B_CTLW0_TXSTT
+#define SI7021_EUSCI_I2C_CTLW0_TXSTP                EUSCI_B_CTLW0_TXSTP
 
-#define SI7021_I2C_TXBUF                   EUSCI_B1->TXBUF
-#define SI7021_I2C_RXBUF                   EUSCI_B1->RXBUF
+#define SI7021_I2C_TXBUF                            EUSCI_B1->TXBUF
+#define SI7021_I2C_RXBUF                            EUSCI_B1->RXBUF
 
-#define SI7021_EUSCI_I2C_IFG               EUSCI_B1->IFG
-#define SI7021_EUSCI_I2C_IFG_TXIFG         EUSCI_B_IFG_TXIFG
-#define SI7021_EUSCI_I2C_IFG_RXIFG         EUSCI_B_IFG_RXIFG
+#define SI7021_EUSCI_I2C_IFG                        EUSCI_B1->IFG
+#define SI7021_EUSCI_I2C_IFG_TXIFG                  EUSCI_B_IFG_TXIFG
+#define SI7021_EUSCI_I2C_IFG_RXIFG                  EUSCI_B_IFG_RXIFG
 
-#define SI7021_BUFF_SIZE                   (8)
+#define SI7021_BUFF_SIZE                            (8)
 /*******************************************************************************
 Global Variables
 *******************************************************************************/
@@ -74,19 +74,28 @@ void si7021_i2c_init()
     /* pin selection complete */
 
     /* Configure USCI_B1 for I2C mode */
-    SI7021_EUSCI_I2C_CTLW0 |= EUSCI_B_CTLW0_SWRST;      // Software reset enabled
+    /* Software reset enabled */
+    SI7021_EUSCI_I2C_CTLW0 |= EUSCI_B_CTLW0_SWRST;
 
-    SI7021_EUSCI_I2C_CTLW0 = EUSCI_B_CTLW0_SWRST |      // Remain eUSCI in reset mode
-            EUSCI_B_CTLW0_MODE_3 |                      // I2C mode
-            EUSCI_B_CTLW0_MST |                         // Master mode
-            EUSCI_B_CTLW0_SYNC |                        // Sync mode
-            EUSCI_B_CTLW0_SSEL__SMCLK;                  // SMCLK
+    /* Remain eUSCI in reset mode
+    I2C mode
+    Master mode
+    Sync mode
+    SMCLK */
+    SI7021_EUSCI_I2C_CTLW0 = EUSCI_B_CTLW0_SWRST |
+           EUSCI_B_CTLW0_MODE_3 |
+           EUSCI_B_CTLW0_MST |
+           EUSCI_B_CTLW0_SYNC |
+           EUSCI_B_CTLW0_SSEL__SMCLK;
 
-    SI7021_EUSCI_I2C_BRW = 120;                        // baudrate /120 -> 100Khz and max is 400Khz
+    /* baudrate /120 -> 100Khz and max is 400Khz */
+    SI7021_EUSCI_I2C_BRW = 120;
 
-    SI7021_EUSCI_I2C_I2CSA = I2C_SI7021_ADDRESS;       // Slave address
+    /* Slave address */
+    SI7021_EUSCI_I2C_I2CSA = I2C_SI7021_ADDRESS;
 
-    SI7021_EUSCI_I2C_CTLW0 &= ~EUSCI_B_CTLW0_SWRST;    // Release eUSCI from reset
+    /* Release eUSCI from reset */
+    SI7021_EUSCI_I2C_CTLW0 &= ~EUSCI_B_CTLW0_SWRST;
 
 }
 
@@ -125,7 +134,7 @@ static void si7021_i2c_write_data(uint8_t function_code,uint8_t length_data)
     si7021_databuffer[0] = function_code;
 
     /* Write slave address */
-    SI7021_EUSCI_I2C_I2CSA = I2C_SI7021_ADDRESS;   // Slave address
+    SI7021_EUSCI_I2C_I2CSA = I2C_SI7021_ADDRESS;
 
     /* Transmit mode */
     SI7021_EUSCI_I2C_CTLW0 |= SI7021_EUSCI_I2C_CTLW0_TR;
@@ -136,9 +145,11 @@ static void si7021_i2c_write_data(uint8_t function_code,uint8_t length_data)
     /* Wait until slave address is sent */
     while(SI7021_EUSCI_I2C_CTLW0 & SI7021_EUSCI_I2C_CTLW0_TXSTT);
 
+    /* provide delay as per analysis from arduino frames */
     reset_timer();
     while(delay_msec() < 1);
 
+    /* wait for slave address sent to complete */
     while(!(SI7021_EUSCI_I2C_IFG & SI7021_EUSCI_I2C_IFG_TXIFG));
 
     /* write logic for multiple bytes */
@@ -146,6 +157,7 @@ static void si7021_i2c_write_data(uint8_t function_code,uint8_t length_data)
 
     for(i = 0; i<length_data; i++)
     {
+        /* provide delay as per analysis from arduino frames */
         delay_usec(3);
         SI7021_I2C_TXBUF = si7021_databuffer[i];
         while(!(SI7021_EUSCI_I2C_IFG & SI7021_EUSCI_I2C_IFG_TXIFG));
@@ -185,20 +197,24 @@ static void si7021_i2c_read_data(uint8_t bytes_read)
     /* Wait until slave address is sent */
     while(SI7021_EUSCI_I2C_CTLW0 & SI7021_EUSCI_I2C_CTLW0_TXSTT);
 
+    /* provide delay as per analysis from arduino frames */
     delay_usec(1);
 
     /* read data 8 bytes */
     for(i = 0; i < bytes_read;i++)
     {
+       /* provide delay as per analysis from arduino frames */
        delay_usec(3);
-       while(!(SI7021_EUSCI_I2C_IFG & SI7021_EUSCI_I2C_IFG_RXIFG));  /* wait till data is received */
+       /* provide delay as per analysis from arduino frames */
+       while(!(SI7021_EUSCI_I2C_IFG & SI7021_EUSCI_I2C_IFG_RXIFG));
        si7021_databuffer[i] = SI7021_I2C_RXBUF;
     }
 
     /* Transmit stop condition */
     SI7021_EUSCI_I2C_CTLW0 |= SI7021_EUSCI_I2C_CTLW0_TXSTP;
 
-    while(!(SI7021_EUSCI_I2C_IFG & SI7021_EUSCI_I2C_IFG_RXIFG));  /* wait till data is received */
+    /* wait till data is received */
+    while(!(SI7021_EUSCI_I2C_IFG & SI7021_EUSCI_I2C_IFG_RXIFG));
     si7021_databuffer[i] = SI7021_I2C_RXBUF;
 
     while(SI7021_EUSCI_I2C_CTLW0 & SI7021_EUSCI_I2C_CTLW0_TXSTP);

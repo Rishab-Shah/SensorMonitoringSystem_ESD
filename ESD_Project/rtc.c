@@ -72,6 +72,7 @@ void rtc_init()
 * @Description: Calculates the RTC time and generates it in the string format
 * @input param : None
 * @return: None
+* @reference : https://microdigisoft.com/single.php?id=180
 *******************************************************************************/
 void calculate_rtc_time(char* timestamp)
 {

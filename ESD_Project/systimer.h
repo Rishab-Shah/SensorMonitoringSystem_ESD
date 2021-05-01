@@ -2,7 +2,7 @@
 * @file: systimer.h
 *
 * @brief: This files consists of the function prototypes and macros
-*  used in the systimer.c file
+* used in the systimer.c file
 * This file is used to provide the systick timer feature to carry out time based
 * activities
 * @author: Rishab Shah

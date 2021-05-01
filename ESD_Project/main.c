@@ -274,7 +274,8 @@ static void control_action()
 *******************************************************************************/
 static void disable_watchdog()
 {
-    WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;     // stop watchdog timer
+    /* stop watchdog timer */
+    WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;
 }
 
 /* EOF */

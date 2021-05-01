@@ -3,7 +3,7 @@
 *
 * @brief: This files consists of the function prototypes used in the uart.c file
 * @ Used to implement serial communication over UART
-*  This file is required to send data over UART to the PC terminal
+* This file is required to send data over UART to the PC terminal
 * @author: Rishab Shah
 * @date:  20-Apr-2021
 * @reference: William Goh - msp432p401x_euscia0_uart_01

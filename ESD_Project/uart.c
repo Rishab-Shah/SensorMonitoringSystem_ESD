@@ -31,7 +31,8 @@ Macros
 #define EUSCI_UART_MCTLW                                EUSCI_A0->MCTLW
 /*******************************************************************************
 * @Function EUSCIA0_IRQHandler
-* @Description: UART interrupt service routine
+* @Description: UART interrupt service routine. Handles Tx and Rx data and
+* enqueues them in the proper buffer
 * @input param : none
 * @return: none
 *******************************************************************************/
@@ -68,7 +69,8 @@ void EUSCIA0_IRQHandler(void)
 * @Description: Init of clock for uart baud rate setting
 * @input param : None
 * @return: None
-* @reference: TI resource explorer for baudrate settings
+* @reference: TI resource explorer for baudrate settings.
+* William Goh - msp432p401x_euscia0_uart_01
 *******************************************************************************/
 void clock_init()
 {
@@ -86,10 +88,11 @@ void clock_init()
 /*******************************************************************************
 * @Function config_uart
 * @Description: configure uart for baudrate and interrupt mode along with circular
-* buffer
+* buffer. Added initialization for queue
 * @input param : None
 * @return: None
 * @reference: TI resource explorer for baudrate settings
+* William Goh - msp432p401x_euscia0_uart_01
 *******************************************************************************/
 void config_uart()
 {

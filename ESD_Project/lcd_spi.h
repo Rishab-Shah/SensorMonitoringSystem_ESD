@@ -2,9 +2,11 @@
 * @file: lcd_spi.h
 *
 * @brief: This files consists of the function headers used in the lcd_spi.h file
-* This file is is used for communication with the LCD module
+* This file is is used for communication with the LCD module. The reference code
+* was for MSP430. The code was ported for the MSP432P401R
 * @date:  20-Apr-2021
 * @reference: William Goh - msp432p401x_euscib0_spi_09
+*  http://rohitg.in/2014/11/09/Nokia5510-lcd-with-MSP430/
 *******************************************************************************/
 #ifndef LCD_SPI_H_
 #define LCD_SPI_H_
