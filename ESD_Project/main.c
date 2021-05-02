@@ -16,7 +16,8 @@ Macros
 *******************************************************************************/
 #define TEMPERATURE_AM2320                        (0)
 #define HEART_BEAT                                P1->OUT ^= BIT0
-#define TEMP_THRESHOLD                            23        /* For testing 23 degree celsius is chosen */
+/* For testing 23 degree celsius is chosen */
+#define TEMP_THRESHOLD                            23
 /*******************************************************************************
 Global Variables
 *******************************************************************************/
@@ -63,25 +64,23 @@ void main(void)
             sensor_processing();
 
             /* Take any control action if required
-             * based upon temprature and humidity value  */
+             * based upon temperature and humidity value  */
             control_action();
 
             /* Indicates that the system is alive
              * and is functioning well to the user */
             HEART_BEAT;
 
-            /*Reset the timer so that the system is free
+            /* Reset the timer so that the system is free
              * to other activities or go to sleep and when
-             * the wakeup time happens do the required
+             * the wake up time happens do the required
              * processing  */
             reset_timer();
         }
-
-        /* go to sleep as ther is no
+        /* Go to sleep as there is no
          * other work */
         __sleep();
         __no_operation();
-
     }
 }
 
@@ -93,13 +92,13 @@ void main(void)
 *******************************************************************************/
 static void init_routine()
 {
-    /* initialise the system clck to operate at 12Mhz */
+    /* initialize the system clock to operate at 12Mhz */
     clock_init();
 
-    /* initialise the systick timer */
+    /* initialize the systick timer */
     init_timer();
 
-    /* initialise the RTC module for timestamp */
+    /* initialize the RTC module for time stamp */
     rtc_init();
 
     /* Configures the UART for communication

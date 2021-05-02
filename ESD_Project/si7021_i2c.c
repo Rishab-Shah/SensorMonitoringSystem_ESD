@@ -20,6 +20,9 @@ Macros
 #define SI7021_SEL_0                                P6->SEL0
 #define SI7021_SEL_1                                P6->SEL1
 
+#define SI7021_BUFF_SIZE                            (8)
+#define SI7021_NOOFBYTES_WRITE                      (1)
+#define SI7021_NOOFBYTES_READ                       (2)
 #define SI7021_MEAS_RH_NOHOLD_CMD                   0xF5 /* Measure RH. No Hold master mode */
 #define SI7021_MEAS_TEMP_NOHOLD_CMD                 0xF3 /* Measure Temperature. No Hold master mode */
 #define I2C_SI7021_ADDRESS                          0x40 /* Address of the SI7021 */
@@ -40,7 +43,6 @@ Macros
 #define SI7021_EUSCI_I2C_IFG_TXIFG                  EUSCI_B_IFG_TXIFG
 #define SI7021_EUSCI_I2C_IFG_RXIFG                  EUSCI_B_IFG_RXIFG
 
-#define SI7021_BUFF_SIZE                            (8)
 /*******************************************************************************
 Global Variables
 *******************************************************************************/
@@ -233,14 +235,14 @@ void si7021_temperature_humidity_measurement()
 {
     /* Humidity related operations */
     /* Write operation  with one byte request */
-    si7021_i2c_write_data(SI7021_MEAS_RH_NOHOLD_CMD,1);
+    si7021_i2c_write_data(SI7021_MEAS_RH_NOHOLD_CMD,SI7021_NOOFBYTES_WRITE);
 
     /* Wait for 20 msec for the conversion to take place */
     reset_timer();
     while(delay_msec() < 20);
 
     /* Read operation with 2 byte request*/
-    si7021_i2c_read_data(2);
+    si7021_i2c_read_data(SI7021_NOOFBYTES_READ);
 
     /* read humidity value */
     si7021_read_humidity();
@@ -251,14 +253,14 @@ void si7021_temperature_humidity_measurement()
 
     /* Temperature related operations */
     /* Write operation  with one byte request */
-    si7021_i2c_write_data(SI7021_MEAS_TEMP_NOHOLD_CMD,1);
+    si7021_i2c_write_data(SI7021_MEAS_TEMP_NOHOLD_CMD,SI7021_NOOFBYTES_WRITE);
 
     /* Wait for 20 msec for the conversion to take place */
     reset_timer();
     while(delay_msec() < 20);
 
     /* Read operation with 2 byte request*/
-    si7021_i2c_read_data(2);
+    si7021_i2c_read_data(SI7021_NOOFBYTES_READ);
 
     /* read temperature value */
     si7021_read_temperature();
@@ -311,3 +313,5 @@ static void si7021_read_temperature()
     /* Update the global variable for SI7021 temperature */
     si7021_temp_in_degC = temperature;
 }
+
+/* EOF */

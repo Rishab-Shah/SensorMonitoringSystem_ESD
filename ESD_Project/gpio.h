@@ -25,3 +25,5 @@ Function Prototype
 void gpio_init();
 
 #endif /* GPIO_H_ */
+
+/* EOF */

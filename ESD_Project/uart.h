@@ -29,3 +29,5 @@ void clock_init();
 void config_uart();
 
 #endif /* UART_H_ */
+
+/* EOF */

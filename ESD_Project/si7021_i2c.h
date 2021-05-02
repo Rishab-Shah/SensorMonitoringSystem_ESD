@@ -24,3 +24,5 @@ void si7021_i2c_init();
 void si7021_temperature_humidity_measurement();
 
 #endif /* SI7021_I2C_H_ */
+
+/* EOF */

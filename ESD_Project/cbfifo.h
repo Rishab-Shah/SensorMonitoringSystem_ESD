@@ -46,3 +46,5 @@ int cbfifo_full(CB_t *cbfifo);
 void cbfifo_init(CB_t *cbfifo , size_t size);
 
 #endif // _CBFIFO_H_
+
+/* EOF */

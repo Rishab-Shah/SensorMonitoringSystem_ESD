@@ -20,6 +20,12 @@ Header files
 #define TIMER_CTL                                    TIMER_A0->CTL
 #define TIMER_CCTL                                   TIMER_A0->CCTL[TIMER_SELECTED]
 #define TIMER_CCR                                    TIMER_A0->CCR[TIMER_SELECTED]
+
+#define MSEC_1                                       1
+#define MSEC_10                                      10
+#define MSEC_100                                     100
+#define MSEC_1000                                    1000
+#define RESOLUTION                                   MSEC_1
 /*******************************************************************************
  Global variables
 *******************************************************************************/

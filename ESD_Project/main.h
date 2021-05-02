@@ -28,3 +28,5 @@ Header files
 #include "si7021_i2c.h"
 
 #endif /* MAIN_H_ */
+
+/* EOF */

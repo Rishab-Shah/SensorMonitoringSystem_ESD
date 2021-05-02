@@ -22,3 +22,5 @@ void rtc_init();
 void calculate_rtc_time(char* timestamp);
 
 #endif /* RTC_H_ */
+
+/* EOF */

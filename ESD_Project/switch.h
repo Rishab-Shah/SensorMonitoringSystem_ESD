@@ -28,3 +28,5 @@ void PORT1_IRQHandler(void);
 
 
 #endif /* SWITCH_H_ */
+
+/* EOF */

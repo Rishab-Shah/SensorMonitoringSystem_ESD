@@ -145,3 +145,5 @@ static const char font[][5] = {
 };
 
 #endif /* PCD8544_H_ */
+
+/* EOF */

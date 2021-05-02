@@ -14,22 +14,28 @@ Header files
 /*******************************************************************************
 Macros
 *******************************************************************************/
-#define AM2320_I2C_ADDRESS          0x5C
+#define AM2320_I2C_ADDRESS                          0x5C
 
-#define EUSCI_I2C_I2CSA             EUSCI_B0->I2CSA
-#define EUSCI_I2C_BRW               EUSCI_B0->BRW
+#define EUSCI_I2C_I2CSA                             EUSCI_B0->I2CSA
+#define EUSCI_I2C_BRW                               EUSCI_B0->BRW
 
-#define EUSCI_I2C_CTLW0             EUSCI_B0->CTLW0
-#define EUSCI_I2C_CTLW0_TR          EUSCI_B_CTLW0_TR
-#define EUSCI_I2C_CTLW0_TXSTT       EUSCI_B_CTLW0_TXSTT
-#define EUSCI_I2C_CTLW0_TXSTP       EUSCI_B_CTLW0_TXSTP
+#define EUSCI_I2C_CTLW0                             EUSCI_B0->CTLW0
+#define EUSCI_I2C_CTLW0_TR                          EUSCI_B_CTLW0_TR
+#define EUSCI_I2C_CTLW0_TXSTT                       EUSCI_B_CTLW0_TXSTT
+#define EUSCI_I2C_CTLW0_TXSTP                       EUSCI_B_CTLW0_TXSTP
 
-#define I2C_TXBUF                   EUSCI_B0->TXBUF
-#define I2C_RXBUF                   EUSCI_B0->RXBUF
+#define I2C_TXBUF                                   EUSCI_B0->TXBUF
+#define I2C_RXBUF                                   EUSCI_B0->RXBUF
 
-#define EUSCI_I2C_IFG               EUSCI_B0->IFG
-#define EUSCI_I2C_IFG_TXIFG0        EUSCI_B_IFG_TXIFG0
-#define EUSCI_I2C_IFG_RXIFG0        EUSCI_B_IFG_RXIFG0
+#define EUSCI_I2C_IFG                               EUSCI_B0->IFG
+#define EUSCI_I2C_IFG_TXIFG0                        EUSCI_B_IFG_TXIFG0
+#define EUSCI_I2C_IFG_RXIFG0                        EUSCI_B_IFG_RXIFG0
+
+#define AM2320_I2C_DATA_READ_BYTES                  (7)
+#define AM2320_BITBANG_ADDRESS                      (0xB8)
+#define AM2320_FUNCTION_CODE                        0x03
+#define AM2320_START_ADDRESS                        0x00
+#define AM2320_REGISTER_LENGTH                      0x04
 /*******************************************************************************
 Global variables
 *******************************************************************************/
@@ -91,10 +97,10 @@ void am2320_i2c_init()
             EUSCI_B_CTLW0_SSEL__SMCLK;
 
 
-    /* 300 (40K hz when 12Mhz is freq)
+    /* 300 (40 Khz when 12Mhz is freq)
      * 70 when 3Mhz freq
-     *  baudrate = SMCLK / 30 = 100kHz */
-    EUSCI_I2C_BRW = 70;
+     * baudrate = SMCLK / 30 = 100kHz */
+    EUSCI_I2C_BRW = 300;
 
     /* Slave address */
     EUSCI_I2C_I2CSA = AM2320_I2C_ADDRESS;
@@ -155,7 +161,7 @@ void am2320_i2c_write_data(uint8_t function_code ,uint8_t start_address ,uint8_t
     am2320_databuffer[2] = registerlength;
 
     /* Write slave address */
-    EUSCI_I2C_I2CSA = AM2320_I2C_ADDRESS;                  // Slave address
+    EUSCI_I2C_I2CSA = AM2320_I2C_ADDRESS;
 
     /* Transmit mode */
     EUSCI_I2C_CTLW0 |= EUSCI_I2C_CTLW0_TR;
@@ -288,3 +294,5 @@ void am2320_temparutre_humidity_measurement()
     reset_timer();
     while(delay_msec() < 10);
 }
+
+/* EOF */

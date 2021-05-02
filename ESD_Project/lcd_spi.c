@@ -112,7 +112,7 @@ void spi_config()
     /* SMCLK (12Mhz) */
     EUSCI_SPI_CTLW0 |= EUSCI_B_CTLW0_SSEL__SMCLK;
 
-    /* 12 Mhz / 12 = 1 Mhz*/
+    /* 12 Mhz / 12 = 100Khz */
     EUSCI_SPI_BRW = 12;
 
     /* Start the SPI state machine */

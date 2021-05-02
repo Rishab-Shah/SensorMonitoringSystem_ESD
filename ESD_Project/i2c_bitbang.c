@@ -16,6 +16,10 @@ Macros
 #define SET_SDA_LOW                             P1->OUT &= ~SDA
 #define SET_SCL_HIGH                            P1->OUT |= SCL
 #define SET_SCL_LOW                             P1->OUT &= ~SCL
+
+#define WRITE                           (0)
+#define READ                            (1)
+#define I2C_DELAY                       (2)
 /*******************************************************************************
 Function Prototype
 *******************************************************************************/
@@ -305,3 +309,6 @@ void init_i2c_bitbang()
     P1->OUT |= SDA;
     P1->OUT |= SCL;
 }
+
+
+/* EOF */

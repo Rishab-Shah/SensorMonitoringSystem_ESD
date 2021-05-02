@@ -22,12 +22,6 @@ Macros
 #define SCL                                         BIT7
 #define SEL_0                                       P1->SEL0
 #define SEL_1                                       P1->SEL1
-
-#define AM2320_I2C_DATA_READ_BYTES                  (7)
-#define AM2320_BITBANG_ADDRESS                      (0xB8)
-#define AM2320_FUNCTION_CODE                        0x03
-#define AM2320_START_ADDRESS                        0x00
-#define AM2320_REGISTER_LENGTH                      0x04
 /*******************************************************************************
 Function Prototype
 *******************************************************************************/
@@ -39,3 +33,5 @@ void am2320_clear_i2c_buffer();
 void am2320_temparutre_humidity_measurement();
 
 #endif /* AM2320_I2C_H_ */
+
+/* EOF */

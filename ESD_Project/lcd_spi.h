@@ -31,3 +31,5 @@ void set_address(uint8_t xaddress, uint8_t yaddress);
 void write_string_to_lcd(const char *string);
 
 #endif /* LCD_SPI_H_ */
+
+/* EOF */
